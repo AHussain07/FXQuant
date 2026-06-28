@@ -16,7 +16,7 @@ A full-stack final year project that combines a paper-trading dashboard with a m
 ## Project Structure
 
 ```
-ah799/
+/
 ├── app/                                  # Frontend and backend (Node workspace)
 │   ├── src/                              # React frontend (Create React App)
 │   │   ├── App.jsx                       # Top-level routes
