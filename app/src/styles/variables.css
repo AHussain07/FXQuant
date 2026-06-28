@@ -1,0 +1,94 @@
+:root {
+  --background: #0a0a0f;
+  --foreground: #ffffff;
+  --card: #141419;
+  --card-foreground: #ffffff;
+  --popover: #141418;
+  --popover-foreground: #ffffff;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #1a1a1f;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1f;
+  --muted-foreground: #9ca3af;
+  --accent: #06b6d4;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: #27272a;
+  --ring: #3b82f6;
+  --radius: 0.5rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ── Shared info icon + tooltip ────────────────────────────── */
+.info-icon-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 5px;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.info-icon {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid #52525b;
+  color: #71717a;
+  font-size: 0.6rem;
+  font-style: italic;
+  font-weight: 700;
+  font-family: Georgia, serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  transition: color 0.15s, border-color 0.15s;
+  line-height: 1;
+  user-select: none;
+}
+
+.info-icon-wrapper:hover .info-icon {
+  color: #93c5fd;
+  border-color: #3b82f6;
+}
+
+.info-tooltip {
+  background-color: #2a2a33;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #d4d4d8;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.45;
+  padding: 9px 11px;
+  border-radius: 8px;
+  z-index: 99999;
+  pointer-events: none;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  white-space: normal;
+  font-style: normal;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Portal tooltip rendered at body level via React portal */
+.info-tooltip-portal {
+  display: block;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background);
+  color: var(--foreground);
+}

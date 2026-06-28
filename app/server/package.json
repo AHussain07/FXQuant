@@ -1,0 +1,31 @@
+{
+  "name": "trading-server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "cd .. && npm start",
+    "clientinstall": "cd .. && npm install",
+    "ml": "cd ../../machine-learning-model && python -m uvicorn main:app --port 8000",
+    "dev": "concurrently -n express,react,ml -c blue,green,magenta \"npm run server\" \"npm run client\" \"npm run ml\""
+  },
+  "dependencies": {
+    "@alpacahq/alpaca-trade-api": "^3.1.3",
+    "axios": "^1.13.2",
+    "concurrently": "^8.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "node-fetch": "^2.7.0",
+    "nodemailer": "^8.0.4",
+    "uuid": "^9.0.1",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "autocannon": "^8.0.0",
+    "jest": "^30.3.0",
+    "nodemon": "^3.0.1"
+  }
+}

@@ -1,0 +1,146 @@
+.open-trades-container {
+  padding: 20px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.open-trades-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.open-trades-loading,
+.open-trades-empty {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+}
+
+.trades-list {
+  display: grid;
+  gap: 16px;
+}
+
+.trade-card {
+  background: var(--bg-primary);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid;
+}
+
+.trade-card.trade-buy {
+  border-left-color: #10b981;
+}
+
+.trade-card.trade-sell {
+  border-left-color: #ef4444;
+}
+
+.trade-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.trade-symbol {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.trade-type {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.trade-type.buy {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.trade-type.sell {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.trade-details {
+  margin-bottom: 16px;
+}
+
+.trade-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.trade-row span:last-child {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.trade-row .tp {
+  color: #10b981;
+}
+
+.trade-row .sl {
+  color: #ef4444;
+}
+
+.close-trade-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-trade-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.close-trade-btn:disabled {
+  background: #4b5563;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* New styles */
+.live-price-badge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.pl-row {
+  margin: 8px 0;
+  font-weight: 600;
+  font-size: 15px;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+.pl-profit {
+  color: #10b981; /* Green */
+}
+
+.pl-loss {
+  color: #ef4444; /* Red */
+}

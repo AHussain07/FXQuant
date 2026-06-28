@@ -1,0 +1,171 @@
+.trade-history-page {
+  min-height: 100vh;
+  background-color: var(--background);
+  padding-top: 80px;
+}
+
+.trade-history-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px;
+  background: var(--card);
+  border-radius: var(--radius);
+  color: var(--foreground);
+  margin-top: 24px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.history-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.history-filters {
+  display: flex;
+  gap: 12px;
+}
+
+.export-csv-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.export-csv-btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.export-csv-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.filter-select {
+  background: var(--input);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.filter-select:focus {
+  border-color: var(--ring);
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th {
+  text-align: left;
+  padding: 16px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.history-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--foreground);
+}
+
+.history-row:hover {
+  background-color: var(--secondary);
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.badge.buy {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.badge.sell {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.text-win {
+  color: #10b981 !important;
+  font-weight: 600;
+}
+
+.text-loss {
+  color: #ef4444 !important;
+  font-weight: 600;
+}
+
+.text-muted {
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+.font-bold {
+  font-weight: 600;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.no-journal-text {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.view-journal-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  min-width: 62.1px;
+}
+
+.view-journal-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.view-journal-btn.no-journal {
+  background: #10b981;
+  color: #e5e7eb;
+}
+
+.view-journal-btn.no-journal:hover {
+  background: #059669;
+}

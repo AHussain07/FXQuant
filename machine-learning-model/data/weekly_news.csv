@@ -1,0 +1,8 @@
+date,time,currency,event,impact,timestamp
+"Jun 30, 2026",01:30 PM,CAD,GDP m/m,High,2026-06-30T08:30:00-04:00
+"Jul 01, 2026",02:00 PM,GBP,BOE Gov Bailey Speaks,High,2026-07-01T09:00:00-04:00
+"Jul 01, 2026",02:00 PM,USD,Fed Chairman Warsh Speaks,High,2026-07-01T09:00:00-04:00
+"Jul 01, 2026",03:00 PM,USD,ISM Manufacturing PMI,High,2026-07-01T10:00:00-04:00
+"Jul 02, 2026",01:30 PM,USD,Average Hourly Earnings m/m,High,2026-07-02T08:30:00-04:00
+"Jul 02, 2026",01:30 PM,USD,Non-Farm Employment Change,High,2026-07-02T08:30:00-04:00
+"Jul 02, 2026",01:30 PM,USD,Unemployment Rate,High,2026-07-02T08:30:00-04:00

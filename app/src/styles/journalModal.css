@@ -1,0 +1,281 @@
+.journal-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.journal-modal-content {
+  background-color: var(--card);
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.journal-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.journal-modal-header h2 {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 1.25rem;
+}
+
+.journal-modal-close {
+  background: none;
+  border: none;
+  color: var(--muted-foreground);
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.journal-modal-close:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--foreground);
+}
+
+.journal-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.journal-loading,
+.journal-error,
+.journal-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--muted-foreground);
+}
+
+.journal-empty svg {
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.journal-empty h3 {
+  margin: 0 0 8px 0;
+  color: var(--foreground);
+}
+
+.journal-empty p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.journal-section {
+  margin-bottom: 24px;
+}
+
+.journal-section:last-child {
+  margin-bottom: 0;
+}
+
+.journal-section h3 {
+  margin: 0 0 12px 0;
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.journal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.journal-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.journal-info-item label {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.journal-info-item span {
+  font-size: 1rem;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.journal-notes {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 16px;
+  color: var(--foreground);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.journal-confluences {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.confluence-tag {
+  background-color: rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.journal-date {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.journal-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.journal-close-btn {
+  padding: 10px 24px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--foreground);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.journal-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.text-green {
+  color: #4ade80;
+}
+
+.text-red {
+  color: #f87171;
+}
+
+.form-section {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #e5e7eb;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #6366f1;
+}
+
+.confluences-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.confluence-checkbox {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confluence-checkbox:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.confluence-checkbox.selected {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: #6366f1;
+}
+
+.confluence-checkbox input {
+  margin-right: 8px;
+}
+
+.confluence-text {
+  font-size: 0.875rem;
+}
+
+.journal-edit-btn {
+  padding: 10px 20px;
+  background: #6366f1;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.journal-edit-btn:hover {
+  background: #5558e3;
+}
+
+.journal-submit-btn {
+  padding: 10px 20px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.journal-submit-btn:hover {
+  background: #059669;
+}

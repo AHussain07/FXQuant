@@ -1,0 +1,93 @@
+/* FXQuant Onboarding Tour - Custom driver.js styles */
+
+.fxquant-tour-popover {
+  background: #1a1a2e !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(99, 102, 241, 0.1) !important;
+  color: #e2e8f0 !important;
+  max-width: 360px !important;
+}
+
+.fxquant-tour-popover .driver-popover-title {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  margin-bottom: 6px !important;
+}
+
+.fxquant-tour-popover .driver-popover-description {
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+  color: #a0aec0 !important;
+}
+
+.fxquant-tour-popover .driver-popover-progress-text {
+  font-size: 0.75rem !important;
+  color: #6366f1 !important;
+  font-weight: 600 !important;
+}
+
+.fxquant-tour-popover .driver-popover-navigation-btns {
+  gap: 8px !important;
+}
+
+.fxquant-tour-popover .driver-popover-prev-btn {
+  background: transparent !important;
+  border: 1px solid rgba(99, 102, 241, 0.4) !important;
+  color: #a0aec0 !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.fxquant-tour-popover .driver-popover-prev-btn:hover {
+  border-color: #6366f1 !important;
+  color: #fff !important;
+}
+
+.fxquant-tour-popover .driver-popover-next-btn,
+.fxquant-tour-popover .driver-popover-close-btn-text {
+  background: #6366f1 !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  padding: 8px 20px !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+
+.fxquant-tour-popover .driver-popover-next-btn:hover,
+.fxquant-tour-popover .driver-popover-close-btn-text:hover {
+  background: #4f46e5 !important;
+}
+
+/* Arrow styling */
+.fxquant-tour-popover .driver-popover-arrow-side-left,
+.fxquant-tour-popover .driver-popover-arrow-side-right,
+.fxquant-tour-popover .driver-popover-arrow-side-top,
+.fxquant-tour-popover .driver-popover-arrow-side-bottom {
+  border-color: #1a1a2e !important;
+}
+
+/* Close button (X) */
+.fxquant-tour-popover .driver-popover-close-btn {
+  color: #64748b !important;
+  font-size: 1.2rem !important;
+  transition: color 0.2s ease !important;
+}
+
+.fxquant-tour-popover .driver-popover-close-btn:hover {
+  color: #fff !important;
+}
+
+/* Highlighted element border */
+.driver-active-element {
+  border-radius: 8px !important;
+}
