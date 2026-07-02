@@ -277,6 +277,105 @@
 }
 
 
+/* --- Mobile hamburger + slide-down menu --- */
+.nav-mobile-toggle {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.nav-mobile-toggle-bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: var(--foreground);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-mobile-toggle.is-open .nav-mobile-toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-mobile-toggle.is-open .nav-mobile-toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+.nav-mobile-toggle.is-open .nav-mobile-toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.nav-mobile-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 16px 16px;
+  border-top: 1px solid rgba(39, 39, 42, 0.6);
+  background-color: rgba(10, 10, 15, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: fadeIn 0.18s ease-out;
+}
+
+.nav-mobile-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.nav-mobile-link:hover {
+  color: var(--foreground);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.nav-mobile-link-active {
+  color: var(--foreground);
+  background-color: rgba(59, 130, 246, 0.14);
+}
+
+.nav-mobile-link-primary {
+  color: var(--primary-foreground);
+  background-color: var(--primary);
+}
+
+.nav-mobile-link-danger {
+  color: #ef4444;
+}
+
+.nav-mobile-divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.08);
+  margin: 8px 0;
+}
+
+.nav-mobile-balance {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  background-color: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.18);
+}
+
 @media (min-width: 768px) {
   .nav-links {
     display: flex;
@@ -284,5 +383,11 @@
 
   .nav-container {
     padding: 0 32px;
+  }
+
+  /* Desktop: hide the hamburger and mobile menu entirely */
+  .nav-mobile-toggle,
+  .nav-mobile-menu {
+    display: none;
   }
 }

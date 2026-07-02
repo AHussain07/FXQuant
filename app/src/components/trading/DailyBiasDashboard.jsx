@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { ML_URL as API_BASE } from "../../config";
 
-const API_BASE = "http://localhost:8000";
 // Poll interval: 60 seconds (server caches for 1 hour anyway)
 const POLL_INTERVAL = 60_000;
 // Faster retry while erroring — handles the startup race where the React app

@@ -59,6 +59,13 @@
   line-height: 1.65;
 }
 
+/* Simpler hero on phones — hide the descriptive paragraph */
+@media (max-width: 639px) {
+  .hero-description {
+    display: none;
+  }
+}
+
 .hero-cta {
   display: flex;
   flex-direction: column;

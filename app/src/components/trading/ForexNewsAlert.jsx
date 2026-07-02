@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { ML_URL as API_BASE } from "../../config";
 
-const API_BASE = "http://localhost:8000";
 
 // Module-level cache: survives component unmounts within the same browser session
 const NEWS_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes

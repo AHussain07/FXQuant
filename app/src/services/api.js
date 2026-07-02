@@ -1,7 +1,6 @@
 import axios from "axios";
 import { auth } from "../firebase/config";
-
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+import { API_URL } from "../config";
 
 const getAuthToken = async () => {
   const user = auth.currentUser;

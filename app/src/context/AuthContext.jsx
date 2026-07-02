@@ -6,13 +6,14 @@ import {
   logOut,
 } from "../firebase/config";
 import { createOrGetUser, getUser } from "../services/api";
+import { ML_URL } from "../config";
 
 const AuthContext = createContext(null);
 
 // Fire-and-forget: warms up the ML server cache so the market page loads fast
 function warmUpMlServer() {
-  fetch("http://localhost:8000/api/bias/eurusd").catch(() => {});
-  fetch("http://localhost:8000/api/news/eurusd").catch(() => {});
+  fetch(`${ML_URL}/api/bias/eurusd`).catch(() => {});
+  fetch(`${ML_URL}/api/news/eurusd`).catch(() => {});
 }
 
 export function useAuth() {

@@ -28,6 +28,7 @@ export default function Market() {
   const [setupError, setSetupError] = useState("");
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [challengeResult, setChallengeResult] = useState(null); // "passed" or "failed"
+  const [isWidgetsOpen, setIsWidgetsOpen] = useState(false); // mobile widgets drawer
 
   const needsAccountSetup = dbUser && !dbUser.accountType;
 
@@ -278,7 +279,46 @@ export default function Market() {
           )}
         </div>
 
-        <div className="widgets-sidebar">
+        {/* Mobile-only: floating button that opens the widgets drawer */}
+        <button
+          className={`widgets-drawer-toggle ${isWidgetsOpen ? "is-hidden" : ""}`}
+          onClick={() => setIsWidgetsOpen(true)}
+          aria-label="Open trade panel"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="8" y1="6" x2="21" y2="6" />
+            <line x1="8" y1="12" x2="21" y2="12" />
+            <line x1="8" y1="18" x2="21" y2="18" />
+            <line x1="3" y1="6" x2="3.01" y2="6" />
+            <line x1="3" y1="12" x2="3.01" y2="12" />
+            <line x1="3" y1="18" x2="3.01" y2="18" />
+          </svg>
+          Trade
+        </button>
+
+        {/* Mobile-only: backdrop behind the open drawer */}
+        {isWidgetsOpen && (
+          <div
+            className="widgets-drawer-backdrop"
+            onClick={() => setIsWidgetsOpen(false)}
+          />
+        )}
+
+        <div className={`widgets-sidebar ${isWidgetsOpen ? "is-open" : ""}`}>
+          {/* Only show the drawer close (X) on the widgets view — the trade and
+              journal forms have their own controls. */}
+          {!showTradingForm && !showJournalForm && (
+            <button
+              className="widgets-drawer-close"
+              onClick={() => setIsWidgetsOpen(false)}
+              aria-label="Close trade panel"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          )}
           {showJournalForm && completedTrade ? (
             <TradeJournalForm
               tradeData={completedTrade}

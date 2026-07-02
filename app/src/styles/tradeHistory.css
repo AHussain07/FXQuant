@@ -72,9 +72,17 @@
   border-color: var(--ring);
 }
 
+/* Let only the table scroll sideways on small screens, not the whole page */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .history-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 640px;
 }
 
 .history-table th {
@@ -168,4 +176,93 @@
 
 .view-journal-btn.no-journal:hover {
   background: #059669;
+}
+
+/* --- Responsive: tablet & mobile --- */
+@media (max-width: 768px) {
+  .trade-history-container {
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  /* Stack the title above a wrapping row of controls */
+  .history-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .history-header-right {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .history-filters {
+    flex-wrap: wrap;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .history-filters .filter-select {
+    flex: 1 1 140px;
+  }
+
+  .export-csv-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
+/* Simpler table on phones: drop Lots / Entry / Exit, keeping
+   Symbol · Type · Result · Closed At · Journal. */
+@media (max-width: 600px) {
+  .history-table {
+    min-width: 0;
+  }
+
+  .history-table th:nth-child(3),
+  .history-table td:nth-child(3),
+  .history-table th:nth-child(4),
+  .history-table td:nth-child(4),
+  .history-table th:nth-child(5),
+  .history-table td:nth-child(5) {
+    display: none;
+  }
+
+  /* Tighten so the remaining 5 columns fit without side-scroll */
+  .history-table th,
+  .history-table td {
+    padding: 12px 8px;
+    font-size: 0.82rem;
+  }
+
+  .history-table th {
+    font-size: 0.75rem;
+  }
+
+  .badge {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+
+  .view-journal-btn {
+    padding: 6px 10px;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .trade-history-page {
+    padding-top: 72px;
+  }
+
+  .trade-history-container {
+    padding: 12px;
+    border-radius: 0;
+  }
+
+  .history-table th,
+  .history-table td {
+    padding: 10px 6px;
+  }
 }

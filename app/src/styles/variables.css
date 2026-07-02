@@ -27,6 +27,13 @@
   box-sizing: border-box;
 }
 
+/* Guard against accidental horizontal scroll on small screens */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* ── Shared info icon + tooltip ────────────────────────────── */
 .info-icon-wrapper {
   position: relative;

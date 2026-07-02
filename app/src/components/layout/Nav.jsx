@@ -7,6 +7,7 @@ export function Nav({ showLinks = true }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   const userTimeoutRef = useRef(null);
@@ -15,8 +16,14 @@ export function Nav({ showLinks = true }) {
     setImgError(false);
   }, [currentUser?.photoURL]);
 
+  // Close the mobile menu whenever the route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const handleLogout = async () => {
     try {
+      setIsMobileMenuOpen(false);
       await logout();
       navigate("/");
     } catch (error) {
@@ -165,9 +172,92 @@ export function Nav({ showLinks = true }) {
                 </>
               )
             )}
+
+            {/* Hamburger — only on small screens (CSS-controlled) */}
+            {showLinks && (
+              <button
+                className={`nav-mobile-toggle ${isMobileMenuOpen ? "is-open" : ""}`}
+                aria-label="Toggle navigation menu"
+                aria-expanded={isMobileMenuOpen}
+                onClick={() => setIsMobileMenuOpen((open) => !open)}
+              >
+                <span className="nav-mobile-toggle-bar" />
+                <span className="nav-mobile-toggle-bar" />
+                <span className="nav-mobile-toggle-bar" />
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Mobile slide-down menu */}
+      {showLinks && isMobileMenuOpen && (
+        <div className="nav-mobile-menu">
+          {/* Account balance pinned to the top of the menu */}
+          {currentUser && dbUser && dbUser.accountBalance != null && (
+            <>
+              <div className="nav-mobile-balance">
+                <span className="balance-label">Balance</span>
+                <span className="balance-amount">
+                  $
+                  {dbUser.accountBalance?.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
+              </div>
+              <div className="nav-mobile-divider" />
+            </>
+          )}
+
+          <Link
+            to="/dashboard"
+            className={`nav-mobile-link ${location.pathname === "/dashboard" ? "nav-mobile-link-active" : ""}`}
+          >
+            Dashboard
+          </Link>
+          <Link
+            to="/market"
+            className={`nav-mobile-link ${location.pathname === "/market" ? "nav-mobile-link-active" : ""}`}
+          >
+            Trade
+          </Link>
+          <Link
+            to="/history"
+            className={`nav-mobile-link ${location.pathname === "/history" ? "nav-mobile-link-active" : ""}`}
+          >
+            Trade History
+          </Link>
+
+          <div className="nav-mobile-divider" />
+
+          {currentUser ? (
+            <>
+              <button
+                className="nav-mobile-link"
+                onClick={() => navigate("/settings")}
+              >
+                Settings
+              </button>
+              <button
+                className="nav-mobile-link nav-mobile-link-danger"
+                onClick={handleLogout}
+              >
+                Sign Out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" className="nav-mobile-link">
+                Log In
+              </Link>
+              <Link to="/signup" className="nav-mobile-link nav-mobile-link-primary">
+                Get Started
+              </Link>
+            </>
+          )}
+        </div>
+      )}
     </nav>
   );
 }
