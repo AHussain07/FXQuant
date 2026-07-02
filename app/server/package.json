@@ -7,7 +7,7 @@
     "server": "nodemon server.js",
     "client": "cd .. && npm start",
     "clientinstall": "cd .. && npm install",
-    "ml": "cd ../../machine-learning-model && python -m uvicorn main:app --port 8000",
+    "ml": "cd ../../machine-learning-model && python -m uvicorn main:app --host 0.0.0.0 --port 8000",
     "dev": "concurrently -n express,react,ml -c blue,green,magenta \"npm run server\" \"npm run client\" \"npm run ml\""
   },
   "dependencies": {
