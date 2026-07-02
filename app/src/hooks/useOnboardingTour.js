@@ -95,7 +95,7 @@ function runDashboardIntro(_userId, driverRef, navigate, skipTour, advancePhase)
         popover: {
           title: "Navigation",
           description:
-            "Use these links to move between the Dashboard, Learning resources, Trading page, and your Trade History.",
+            "Use these links to move between the Dashboard, Trading page, and your Trade History.",
         },
       },
       {
@@ -104,14 +104,6 @@ function runDashboardIntro(_userId, driverRef, navigate, skipTour, advancePhase)
           title: "Dashboard",
           description:
             "You're here now! The Dashboard shows your trading performance including win rate, equity curve, and most traded pairs.",
-        },
-      },
-      {
-        element: "#tour-nav-learn",
-        popover: {
-          title: "Learn",
-          description:
-            "New to trading? The Learn section has curated video lessons on trading confluences and strategies.",
         },
       },
       {

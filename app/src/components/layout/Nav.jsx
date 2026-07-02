@@ -65,14 +65,6 @@ export function Nav({ showLinks = true }) {
                 Dashboard
               </Link>
               <Link
-                to="/learn"
-                className={`nav-link ${location.pathname === "/learn" ? "nav-link-active" : ""}`}
-                id="tour-nav-learn"
-              >
-                Learn
-              </Link>
-
-              <Link
                 to="/market"
                 className={`nav-link ${location.pathname === "/market" ? "nav-link-active" : ""}`}
                 id="tour-nav-trade"

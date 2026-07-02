@@ -43,6 +43,7 @@
   font-weight: 500 !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
+  text-shadow: none !important;
 }
 
 .fxquant-tour-popover .driver-popover-prev-btn:hover {
@@ -61,6 +62,7 @@
   font-weight: 600 !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
+  text-shadow: none !important;
 }
 
 .fxquant-tour-popover .driver-popover-next-btn:hover,

@@ -21,11 +21,11 @@ A full-stack final year project that combines a paper-trading dashboard with a m
 │   ├── src/                              # React frontend (Create React App)
 │   │   ├── App.jsx                       # Top-level routes
 │   │   ├── index.js                      # React entry point
-│   │   ├── pages/                        # Dashboard, Home, Learn, Market, Settings
+│   │   ├── pages/                        # Dashboard, Home, Market, Settings
 │   │   ├── components/                   # UI building blocks (common, dashboard, journal, layout, trading)
 │   │   ├── context/                      # AuthContext (global auth state)
 │   │   ├── services/                     # API clients (api.js, journalService.js)
-│   │   ├── hooks/                        # Custom hooks (onboarding tour, YouTube data)
+│   │   ├── hooks/                        # Custom hooks (onboarding tour)
 │   │   ├── firebase/                     # Firebase config
 │   │   ├── styles/                       # CSS files
 │   │   └── data/                         # Static frontend data

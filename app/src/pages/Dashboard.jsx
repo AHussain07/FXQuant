@@ -77,19 +77,7 @@ const Dashboard = () => {
     );
   }
 
-  if (!stats || stats.totalTrades === 0) {
-    return (
-      <div className="dashboard-page">
-        <Nav showLinks={true} />
-        <div className="dashboard-container">
-          <div className="empty-dashboard">
-            <h2>No Trading Data Yet</h2>
-            <p>Start trading to see your performance statistics here.</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const hasTrades = stats && stats.totalTrades > 0;
 
   return (
     <div className="dashboard-page">
@@ -113,6 +101,17 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {!hasTrades ? (
+          <div className="empty-dashboard">
+            <h2>No Trading Data Yet</h2>
+            <p>
+              {timeframe === "all"
+                ? "Start trading to see your performance statistics here."
+                : "No trades found for this time period. Try selecting a different range above."}
+            </p>
+          </div>
+        ) : (
+        <>
         <div className="stats-grid" id="tour-stats-grid">
           <StatCard title="Total Trades" value={stats.totalTrades} />
           <StatCard
@@ -255,6 +254,8 @@ const Dashboard = () => {
           <TradingPairsCard mostTraded={stats.mostTradedPairs} />
           <ConfluencesCard confluences={stats.topConfluences} />
         </div>
+        </>
+        )}
       </div>
     </div>
   );

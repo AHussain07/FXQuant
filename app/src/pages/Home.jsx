@@ -154,15 +154,17 @@ export default function Home() {
             <div className="hero-inner">
               <h1 className="hero-title">
                 <span className="hero-title-normal">
-                  Master Day Trading with
+                  Master Forex Trading,
                 </span>
                 <br />
-                <span className="hero-title-gradient">Machine Learning</span>
+                <span className="hero-title-gradient">Without the Risk</span>
               </h1>
 
               <p className="hero-description">
-                Learn, practice, and perfect your trading strategy with paper
-                trading, journaling and machine learning insights.
+                Practise forex trading with live market prices and none of the
+                risk. Take on funded-account challenges, journal every trade, and
+                sharpen your edge with data-driven bias predictions on the major
+                pairs.
               </p>
 
               <div className="hero-cta">
@@ -227,8 +229,9 @@ export default function Home() {
             <div className="features-header">
               <h2 className="features-title">Everything You Need to Succeed</h2>
               <p className="features-description">
-                Our comprehensive platform provides all the tools and insights
-                you need to become a successful day trader.
+                A complete forex practice environment, from live-price paper
+                trading and funded-account challenges to bias predictions, a
+                trade journal, and performance analytics.
               </p>
             </div>
 
@@ -249,8 +252,8 @@ export default function Home() {
                 </div>
                 <h3 className="feature-title">Paper Trading</h3>
                 <p className="feature-description">
-                  Practice trading with real-time market data without risking
-                  real money. Build confidence before going live.
+                  Buy and sell major currency pairs against real-time prices from
+                  Alpaca and Finnhub, with no real money at risk.
                 </p>
               </div>
 
@@ -264,14 +267,15 @@ export default function Home() {
                     stroke="#06b6d4"
                     strokeWidth="2"
                   >
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
                   </svg>
                 </div>
-                <h3 className="feature-title">Trade Journaling</h3>
+                <h3 className="feature-title">Funded Challenges</h3>
                 <p className="feature-description">
-                  Document every trade with detailed notes and emotional states.
-                  Learn from your history.
+                  Take on $50K, $100K, or $150K prop-firm challenges with real
+                  profit targets and drawdown limits, or trade a rule-free demo
+                  account.
                 </p>
               </div>
 
@@ -285,14 +289,13 @@ export default function Home() {
                     stroke="#3b82f6"
                     strokeWidth="2"
                   >
-                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"></path>
-                    <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"></path>
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                   </svg>
                 </div>
-                <h3 className="feature-title">ML Insights</h3>
+                <h3 className="feature-title">ML Bias Predictions</h3>
                 <p className="feature-description">
-                  ML-powered daily market bias and trade-timing suggestions to
-                  support smarter decisions.
+                  XGBoost models forecast daily directional bias for EURUSD,
+                  GBPUSD, USDJPY, AUDUSD, and USDCAD to inform your decisions.
                 </p>
               </div>
 
@@ -306,15 +309,81 @@ export default function Home() {
                     stroke="#06b6d4"
                     strokeWidth="2"
                   >
-                    <line x1="12" y1="20" x2="12" y2="10"></line>
-                    <line x1="18" y1="20" x2="18" y2="4"></line>
-                    <line x1="6" y1="20" x2="6" y2="16"></line>
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                   </svg>
                 </div>
-                <h3 className="feature-title">Analytics</h3>
+                <h3 className="feature-title">Trade Journal</h3>
                 <p className="feature-description">
-                  Deep dive into your trading performance with comprehensive
-                  statistics, win rates, and risk metrics.
+                  Document every trade with detailed notes and a full edit
+                  history so you can learn from your wins and losses.
+                </p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-icon feature-icon-primary">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#3b82f6"
+                    strokeWidth="2"
+                  >
+                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                    <line x1="3" y1="20" x2="21" y2="20"></line>
+                  </svg>
+                </div>
+                <h3 className="feature-title">Live Charts</h3>
+                <p className="feature-description">
+                  Analyse the market on interactive TradingView charts with
+                  multiple timeframes, trendlines, and price levels.
+                </p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-icon feature-icon-accent">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#06b6d4"
+                    strokeWidth="2"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                </div>
+                <h3 className="feature-title">News Calendar</h3>
+                <p className="feature-description">
+                  Stay ahead of high-impact economic events pulled weekly from
+                  Forex Factory before they move the market.
+                </p>
+              </div>
+
+              <div className="feature-card">
+                <div className="feature-icon feature-icon-primary">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#3b82f6"
+                    strokeWidth="2"
+                  >
+                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                    <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                  </svg>
+                </div>
+                <h3 className="feature-title">Performance Analytics</h3>
+                <p className="feature-description">
+                  Track your win rate, equity curve, and most-traded pairs on a
+                  dashboard that turns your history into insight.
                 </p>
               </div>
             </div>

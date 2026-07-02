@@ -36,7 +36,8 @@
 .hero-title {
   font-size: 3rem;
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
 }
 
 .hero-title-normal {
@@ -53,9 +54,9 @@
 .hero-description {
   font-size: 1.25rem;
   color: var(--muted-foreground);
-  max-width: 768px;
+  max-width: 680px;
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .hero-cta {
@@ -108,6 +109,7 @@
   font-weight: 700;
   color: var(--foreground);
   margin-bottom: 16px;
+  letter-spacing: -0.02em;
 }
 
 .features-description {
@@ -118,52 +120,64 @@
 }
 
 .features-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
 .feature-card {
-  background-color: rgba(20, 20, 24, 0.5);
-  border: 1px solid rgba(39, 39, 42, 0.4);
-  border-radius: 8px;
-  padding: 24px;
-  transition: all 0.3s ease;
+  position: relative;
+  box-sizing: border-box;
+  flex: 0 1 100%;
+  background-color: rgba(24, 24, 28, 0.6);
+  border: 1px solid rgba(39, 39, 42, 0.6);
+  border-radius: 14px;
+  padding: 28px 24px;
+  transition: transform 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
 .feature-card:hover {
-  border-color: rgba(59, 130, 246, 0.4);
-  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+  transform: translateY(-4px);
+  border-color: rgba(59, 130, 246, 0.45);
+  background-color: rgba(28, 28, 34, 0.75);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(59, 130, 246, 0.06);
 }
 
 .feature-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .feature-icon-primary {
-  background-color: rgba(59, 130, 246, 0.2);
+  background-color: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(59, 130, 246, 0.25);
 }
 
 .feature-icon-accent {
-  background-color: rgba(6, 182, 212, 0.2);
+  background-color: rgba(6, 182, 212, 0.14);
+  border: 1px solid rgba(6, 182, 212, 0.25);
 }
 
 .feature-title {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--foreground);
-  margin-bottom: 16px;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
 }
 
 .feature-description {
   color: var(--muted-foreground);
-  line-height: 1.6;
+  line-height: 1.65;
+  font-size: 0.9375rem;
 }
 
 .button {
@@ -370,8 +384,9 @@
     font-size: 1.5rem;
   }
 
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .feature-card {
+    /* two per row: subtract the single 20px gap */
+    flex-basis: calc((100% - 20px) / 2);
   }
 
   .features-title {
@@ -380,8 +395,9 @@
 }
 
 @media (min-width: 1024px) {
-  .features-grid {
-    grid-template-columns: repeat(4, 1fr);
+  .feature-card {
+    /* four per row: subtract the three 20px gaps, trailing row stays centred */
+    flex-basis: calc((100% - 60px) / 4);
   }
 
   .hero-content {
