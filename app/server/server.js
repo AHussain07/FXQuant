@@ -13,7 +13,22 @@ const emailAuthRoutes = require('./routes/emailAuth');
 
 const app = express();
 
-app.use(cors());
+// Lock CORS to the deployed frontend in production. Set ALLOWED_ORIGINS to a
+// comma-separated list (e.g. "https://your-app.vercel.app"). Defaults to the
+// local dev origin so `npm run dev` keeps working with no extra config.
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:3000")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow non-browser requests (curl, health checks) that send no Origin.
+      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
+  })
+);
 app.use(express.json());
 
 // Routes

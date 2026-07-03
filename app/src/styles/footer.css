@@ -28,12 +28,6 @@
   color: var(--primary);
 }
 
-.footer-description {
-  font-size: 0.875rem;
-  color: var(--muted-foreground);
-  max-width: 500px;
-}
-
 .footer-copyright {
   font-size: 0.75rem;
   color: var(--muted-foreground);

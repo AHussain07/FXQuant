@@ -1,0 +1,10 @@
+# Pinned to the versions this service was developed/trained against.
+# xgboost in particular is pinned so the committed models/*.json load cleanly.
+fastapi==0.135.2
+uvicorn==0.42.0
+pydantic==2.11.3
+numpy==1.26.2
+pandas==2.2.3
+xgboost==3.2.0
+requests==2.32.3
+pytz==2024.2

@@ -10,17 +10,27 @@ from datetime import datetime, timedelta, timezone
 
 app = FastAPI()
 
-# Enable CORS so your React app can communicate with this API
+# Enable CORS so your React app can communicate with this API.
+# In production set ALLOWED_ORIGINS to a comma-separated list of the deployed
+# frontend origin(s), e.g. "https://your-app.vercel.app". Defaults to the local
+# dev origins so `npm run dev` keeps working with no extra config.
+_allowed_origins = os.environ.get(
+    "ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000"
+)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[o.strip() for o in _allowed_origins.split(",") if o.strip()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # --- Configuration ---
-TIINGO_API_TOKEN = '05bd307a417a7061890cabea66937953d20994c2'
+# API token comes from the environment in deployment; the committed value is only
+# a local-dev fallback and should be rotated (it has been exposed in git history).
+TIINGO_API_TOKEN = os.environ.get(
+    "TIINGO_API_TOKEN", "05bd307a417a7061890cabea66937953d20994c2"
+)
 PAIRS = {
     'EURUSD': 'eurusd',
     'USDJPY': 'usdjpy',
