@@ -11,6 +11,7 @@ const Trade = require("../models/Trade");
 const JournalEntry = require("../models/JournalEntry");
 const { signAppToken } = require("../utils/appToken");
 const { verifyFirebaseIdToken } = require("../utils/firebaseToken");
+const { serverError } = require("../utils/httpError");
 
 // Prop-firm challenge account sizes (USD starting balance).
 const PROP_ACCOUNT_BALANCES = {
@@ -43,7 +44,7 @@ const getUser = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    serverError(res, "Get user error", error);
   }
 };
 
@@ -90,8 +91,7 @@ const createOrGetUser = async (req, res) => {
       message: "New user created successfully",
     });
   } catch (error) {
-    console.error("Create/Get user error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Create/Get user error", error);
   }
 };
 
@@ -151,8 +151,7 @@ const setupAccount = async (req, res) => {
     await user.save();
     res.json({ user, message: "Account set up successfully" });
   } catch (error) {
-    console.error("Setup account error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Setup account error", error);
   }
 };
 
@@ -176,8 +175,7 @@ const resetTradingAccount = async (req, res) => {
 
     res.json({ message: "Trading account reset successfully", user });
   } catch (error) {
-    console.error("Reset trading account error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Reset trading account error", error);
   }
 };
 
@@ -199,8 +197,7 @@ const resetFullAccount = async (req, res) => {
 
     res.json({ message: "Full account reset successfully", user });
   } catch (error) {
-    console.error("Reset full account error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Reset full account error", error);
   }
 };
 
@@ -216,8 +213,7 @@ const deleteAccount = async (req, res) => {
 
     res.json({ message: "Account deleted successfully" });
   } catch (error) {
-    console.error("Delete account error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Delete account error", error);
   }
 };
 
@@ -232,7 +228,7 @@ const markTourComplete = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    serverError(res, "Mark tour complete error", error);
   }
 };
 

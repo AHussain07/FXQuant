@@ -39,6 +39,10 @@ MODULE_ROOT = os.path.abspath(os.path.join(HERE, ".."))
 if MODULE_ROOT not in sys.path:
     sys.path.insert(0, MODULE_ROOT)
 
+# main refuses to import without a token. Tiingo is mocked throughout, so the
+# value only has to exist.
+os.environ.setdefault("TIINGO_API_TOKEN", "test-token")
+
 import main  # noqa: E402  (path manipulation must precede import)
 
 

@@ -12,6 +12,7 @@
 const Trade = require("../models/Trade");
 const User = require("../models/User");
 const JournalEntry = require("../models/JournalEntry");
+const { serverError } = require("../utils/httpError");
 
 const DEFAULT_STARTING_BALANCE = 100000;
 const TOP_PAIRS_LIMIT = 5;
@@ -212,8 +213,7 @@ const getDashboardStats = async (req, res) => {
       topConfluences,
     });
   } catch (error) {
-    console.error("Dashboard stats error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Dashboard stats error", error);
   }
 };
 

@@ -33,6 +33,9 @@ service together (named `express`, `react`, `ml`).
   routes if MongoDB is unavailable, logging a connection error.
 - The FastAPI service downloads ~5 years of price CSVs from Tiingo on the first `/api/bias/{ticker}`
   request and trains an XGBoost model on demand, so that first call is slow.
+- The FastAPI service requires `TIINGO_API_TOKEN` in its environment and refuses to start
+  without it. It reads the process environment directly (no `.env` loading), so export it
+  before `uvicorn` / `npm run dev`.
 
 ## Visual verification
 

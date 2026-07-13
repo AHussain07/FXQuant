@@ -26,11 +26,14 @@ app.add_middleware(
 )
 
 # --- Configuration ---
-# API token comes from the environment in deployment; the committed value is only
-# a local-dev fallback and should be rotated (it has been exposed in git history).
-TIINGO_API_TOKEN = os.environ.get(
-    "TIINGO_API_TOKEN", "05bd307a417a7061890cabea66937953d20994c2"
-)
+# No default: a committed fallback token would be readable by anyone with the
+# source, so an unset variable has to be a hard failure rather than a quiet
+# fall back to a shared key.
+TIINGO_API_TOKEN = os.environ.get("TIINGO_API_TOKEN")
+if not TIINGO_API_TOKEN:
+    raise RuntimeError(
+        "TIINGO_API_TOKEN is not set. Add it to the environment before starting the service."
+    )
 PAIRS = {
     'EURUSD': 'eurusd',
     'USDJPY': 'usdjpy',

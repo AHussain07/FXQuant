@@ -15,6 +15,7 @@
 const User = require("../models/User");
 const Trade = require("../models/Trade");
 const { verifyAppToken } = require("../utils/appToken");
+const { serverError } = require("../utils/httpError");
 
 /**
  * Require a valid session token. Sets `req.userId` to the caller's public id.
@@ -79,7 +80,7 @@ const requireTradeOwnership = async (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    serverError(res, "Trade ownership check error", error);
   }
 };
 

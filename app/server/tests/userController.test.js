@@ -11,6 +11,19 @@
  *   FR20 — Reset-trading, reset-full, and delete-account flows
  */
 
+// The controller signs a session token on every successful login, and
+// utils/appToken refuses to sign without a secret rather than falling back to a
+// predictable default. Set before requiring the controller.
+process.env.JWT_SECRET = "test-secret";
+
+// Sign-in identity comes from a Firebase ID token that the server verifies
+// itself -- the caller no longer gets to assert who it is. Stub the verifier so
+// the suite stays offline; that it is *called at all* is the security property
+// under test here.
+jest.mock("../utils/firebaseToken", () => ({
+  verifyFirebaseIdToken: jest.fn(),
+}));
+
 jest.mock("../models/User", () => {
   const ctor = jest.fn().mockImplementation(function (fields) {
     Object.assign(this, fields);
@@ -37,6 +50,7 @@ jest.mock("../models/JournalEntry", () => ({
 const User = require("../models/User");
 const Trade = require("../models/Trade");
 const JournalEntry = require("../models/JournalEntry");
+const { verifyFirebaseIdToken } = require("../utils/firebaseToken");
 const controller = require("../controllers/userController");
 
 const makeRes = () => {
@@ -52,35 +66,67 @@ beforeEach(() => jest.clearAllMocks());
 // createOrGetUser — first login vs repeat login [FR1]
 // ─────────────────────────────────────────────────────────────────────────
 describe("createOrGetUser [FR1]", () => {
+  // What a valid Firebase ID token decodes to once the signature checks out.
+  const asVerified = (uid, email) =>
+    verifyFirebaseIdToken.mockResolvedValue({ uid, email });
+
   it("should create a new user on first Google OAuth login [FR1]", async () => {
+    asVerified("google-xyz", "u@g.com");
     User.findOne.mockResolvedValue(null);
     const res = makeRes();
-    await controller.createOrGetUser(
-      { body: { userId: "google-xyz", gmail: "u@g.com" } },
-      res
-    );
+
+    await controller.createOrGetUser({ body: { idToken: "valid.id.token" } }, res);
+
     expect(res.status).toHaveBeenCalledWith(201);
     const body = res.json.mock.calls[0][0];
     expect(body.isNewUser).toBe(true);
     expect(body.user.gmail).toBe("u@g.com");
+    expect(body.token).toEqual(expect.any(String));
   });
 
   it("should return the existing user on a repeat Google OAuth login [FR1]", async () => {
+    asVerified("google-xyz", "u@g.com");
     User.findOne.mockResolvedValue({ userId: "google-xyz", gmail: "u@g.com" });
     const res = makeRes();
-    await controller.createOrGetUser(
-      { body: { userId: "google-xyz", gmail: "u@g.com" } },
-      res
-    );
+
+    await controller.createOrGetUser({ body: { idToken: "valid.id.token" } }, res);
+
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({ isNewUser: false })
     );
   });
 
-  it("should 400 when payload is missing userId or gmail [FR1]", async () => {
+  it("should 400 when no idToken is supplied [FR1]", async () => {
     const res = makeRes();
     await controller.createOrGetUser({ body: {} }, res);
     expect(res.status).toHaveBeenCalledWith(400);
+    expect(verifyFirebaseIdToken).not.toHaveBeenCalled();
+  });
+
+  it("should 401 when the idToken fails verification [FR1]", async () => {
+    verifyFirebaseIdToken.mockRejectedValue(new Error("signature mismatch"));
+    const res = makeRes();
+
+    await controller.createOrGetUser({ body: { idToken: "forged.id.token" } }, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(User.findOne).not.toHaveBeenCalled();
+  });
+
+  it("should take the identity from the verified token, never from the body [FR1]", async () => {
+    // The body claims to be the victim; the token says otherwise. The token wins.
+    asVerified("attacker-uid", "attacker@evil.com");
+    User.findOne.mockResolvedValue(null);
+    const res = makeRes();
+
+    await controller.createOrGetUser(
+      { body: { idToken: "valid.id.token", userId: "victim-uid", gmail: "victim@g.com" } },
+      res
+    );
+
+    const body = res.json.mock.calls[0][0];
+    expect(body.user.userId).toBe("attacker-uid");
+    expect(body.user.gmail).toBe("attacker@evil.com");
   });
 });
 

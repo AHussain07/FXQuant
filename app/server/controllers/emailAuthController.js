@@ -20,10 +20,31 @@ const { signAppToken } = require("../utils/appToken");
 const CODE_LIFETIME_MS = 10 * 60 * 1000;
 const CODE_BYTE_LENGTH = 3;
 
-// In-memory verification codes: { email: { code, expiresAt } }.
+// A code is only as strong as the number of guesses you get at it. 6 hex chars
+// is a small space, so the code is burned after this many wrong tries and the
+// user has to request a new one.
+const MAX_VERIFY_ATTEMPTS = 5;
+
+// In-memory verification codes: { email: { code, expiresAt, attempts } }.
 // TODO: This is per-process state — won't survive restarts and won't work
 // behind multiple instances. Move to Redis or the DB if we scale out.
 const verificationCodes = new Map();
+
+// Nothing ever removed expired entries, so a stream of /send-code calls for
+// addresses that never verify would grow this map without bound.
+const purgeExpiredCodes = () => {
+  const now = Date.now();
+  for (const [email, entry] of verificationCodes) {
+    if (now > entry.expiresAt) verificationCodes.delete(email);
+  }
+};
+
+/** Compare in constant time so response latency can't leak the code. */
+const codesMatch = (a, b) => {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+};
 
 let transporter = null;
 
@@ -36,7 +57,6 @@ const getTransporter = () => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
-      tls: { rejectUnauthorized: false },
     });
   }
   return transporter;
@@ -68,10 +88,13 @@ const sendVerificationCode = async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ message: "Email is required" });
 
+    purgeExpiredCodes();
+
     const code = crypto.randomBytes(CODE_BYTE_LENGTH).toString("hex").toUpperCase();
     verificationCodes.set(email.toLowerCase(), {
       code,
       expiresAt: Date.now() + CODE_LIFETIME_MS,
+      attempts: 0,
     });
 
     await getTransporter().sendMail({
@@ -109,7 +132,15 @@ const verifyCode = async (req, res) => {
       verificationCodes.delete(normalizedEmail);
       return res.status(400).json({ message: "Verification code has expired. Please request a new one." });
     }
-    if (stored.code !== code.toUpperCase()) {
+
+    if (!codesMatch(stored.code, code.toUpperCase())) {
+      stored.attempts += 1;
+      if (stored.attempts >= MAX_VERIFY_ATTEMPTS) {
+        verificationCodes.delete(normalizedEmail);
+        return res.status(400).json({
+          message: "Too many incorrect attempts. Please request a new code.",
+        });
+      }
       return res.status(400).json({ message: "Invalid verification code" });
     }
 

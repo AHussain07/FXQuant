@@ -14,6 +14,7 @@ const User = require("../models/User");
 const { v4: uuidv4 } = require("uuid");
 
 const { getPriceForSymbol } = require("./priceController");
+const { serverError } = require("../utils/httpError");
 const {
   calculateMargin,
   calculateProfit,
@@ -239,8 +240,7 @@ const cancelPendingOrder = async (req, res) => {
 
     res.json({ message: "Pending order cancelled", trade });
   } catch (error) {
-    console.error("Cancel order error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Cancel order error", error);
   }
 };
 
@@ -285,8 +285,7 @@ const closeTradeManually = async (req, res) => {
       challengeResult: result.challengeResult,
     });
   } catch (error) {
-    console.error("Close trade error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Close trade error", error);
   }
 };
 
@@ -324,8 +323,7 @@ const updateTradeLevels = async (req, res) => {
 
     res.json({ trade, message: "Trade levels updated" });
   } catch (error) {
-    console.error("Update levels error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Update levels error", error);
   }
 };
 
@@ -367,7 +365,7 @@ const checkTradeTPSL = async (req, res) => {
       unrealizedPnL: calculateProfit(trade, currentExitPrice),
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    serverError(res, "Check trade TP/SL error", error);
   }
 };
 
@@ -382,7 +380,7 @@ const getUserTrades = async (req, res) => {
       .populate("userId", "gmail accountBalance");
     res.json(trades);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    serverError(res, "Get user trades error", error);
   }
 };
 
@@ -401,7 +399,7 @@ const getOpenTrades = async (req, res) => {
       .populate("userId", "gmail accountBalance");
     res.json(trades);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    serverError(res, "Get open trades error", error);
   }
 };
 
@@ -413,7 +411,7 @@ const getTrade = async (req, res) => {
     if (!trade) return res.status(404).json({ message: "Trade not found" });
     res.json(trade);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    serverError(res, "Get trade error", error);
   }
 };
 

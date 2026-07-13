@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const helmet = require("helmet");
 require("dotenv").config();
 
 // const authRoutes = require('./routes/auth');
@@ -12,6 +13,15 @@ const dashboardRoutes = require('./routes/dashboard');
 const emailAuthRoutes = require('./routes/emailAuth');
 
 const app = express();
+
+// Render terminates TLS at its proxy, so without this every request appears to
+// come from the proxy's address and the auth rate limiters would share a single
+// bucket across all users. One hop: Render's load balancer.
+app.set("trust proxy", 1);
+
+// Standard hardening headers (HSTS, nosniff, frameguard, ...). This is a JSON
+// API, so the CSP -- which only governs page rendering -- is not needed.
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // Lock CORS to the deployed frontend in production. Set ALLOWED_ORIGINS to a
 // comma-separated list (e.g. "https://your-app.vercel.app"). Defaults to the
@@ -29,7 +39,9 @@ app.use(
     },
   })
 );
-app.use(express.json());
+// Every payload this API accepts is a small JSON object; the cap stops a large
+// body from being used to exhaust memory.
+app.use(express.json({ limit: "100kb" }));
 
 // Routes
 // app.use('/api/auth', authRoutes);

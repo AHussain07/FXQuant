@@ -10,9 +10,6 @@ function getTransporter() {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD,
       },
-      tls: {
-        rejectUnauthorized: false,
-      },
     });
   }
   return transporter;

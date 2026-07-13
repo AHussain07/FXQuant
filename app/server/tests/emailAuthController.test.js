@@ -9,6 +9,10 @@
  *   NFR5 — No raw passwords; userId is a SHA-256-derived hash of the email
  */
 
+// A successful verify ends by signing a session token, and utils/appToken throws
+// rather than falling back to a predictable secret. Set before the require below.
+process.env.JWT_SECRET = "test-secret";
+
 const mockSendMail = jest.fn().mockResolvedValue({ accepted: ["a@b.com"] });
 
 jest.mock("nodemailer", () => ({
@@ -163,5 +167,28 @@ describe("verifyCode [FR2, NFR5]", () => {
     const r = makeRes();
     await verifyCode({ body: {} }, r);
     expect(r.status).toHaveBeenCalledWith(400);
+  });
+
+  it("should burn the code after 5 wrong guesses so it cannot be brute-forced", async () => {
+    User.findOne.mockResolvedValue(null);
+    await sendVerificationCode({ body: { email: "brute@example.com" } }, makeRes());
+    const realCode = getEmittedCode();
+
+    // Four misses: still guessable, code stays live.
+    for (let i = 0; i < 4; i++) {
+      const r = await submit("brute@example.com", "000000");
+      expect(r.json.mock.calls[0][0].message).toMatch(/invalid verification code/i);
+    }
+
+    // Fifth miss trips the cap and discards the code.
+    const tripped = await submit("brute@example.com", "000000");
+    expect(tripped.status).toHaveBeenCalledWith(400);
+    expect(tripped.json.mock.calls[0][0].message).toMatch(/too many incorrect attempts/i);
+
+    // Even the correct code is now worthless -- the attacker has to start over,
+    // which puts them back behind the per-IP/email rate limiter.
+    const after = await submit("brute@example.com", realCode);
+    expect(after.status).toHaveBeenCalledWith(400);
+    expect(after.json.mock.calls[0][0].message).toMatch(/no verification code found/i);
   });
 });

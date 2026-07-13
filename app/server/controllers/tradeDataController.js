@@ -9,6 +9,7 @@
 const Trade = require("../models/Trade");
 const User = require("../models/User");
 const JournalEntry = require("../models/JournalEntry");
+const { serverError } = require("../utils/httpError");
 
 /**
  * Translate ?timeframe= into a `closedAt: { $gte }` filter. Returns {} for
@@ -64,8 +65,7 @@ const getTradeHistory = async (req, res) => {
 
     res.json(tradesWithJournalStatus);
   } catch (error) {
-    console.error("Get trade history error:", error);
-    res.status(500).json({ message: error.message });
+    serverError(res, "Get trade history error", error);
   }
 };
 
