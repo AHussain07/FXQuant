@@ -17,6 +17,33 @@ function warmUpMlServer() {
   fetch(`${ML_URL}/api/news/eurusd`).catch(() => {});
 }
 
+/**
+ * Retry the auth bootstrap before giving up on it.
+ *
+ * Loading the user record is the first request the app makes to the API, and in
+ * a deployed setup that is also the request that wakes the service if it has
+ * spun down -- so it can fail outright rather than merely being slow. Against a
+ * local dev proxy it is instant and effectively never fails, which is why a
+ * single attempt was enough until this was deployed.
+ *
+ * Failing it silently is worse than being slow: it leaves the app signed in with
+ * a null dbUser, and downstream code cannot tell that apart from a brand-new
+ * account -- which is how the onboarding tour ended up running for existing users.
+ */
+const BOOTSTRAP_ATTEMPTS = 3;
+
+async function withRetry(request) {
+  for (let attempt = 0; attempt < BOOTSTRAP_ATTEMPTS; attempt++) {
+    try {
+      return await request();
+    } catch (error) {
+      if (attempt === BOOTSTRAP_ATTEMPTS - 1) throw error;
+      // 1s, then 2s -- enough to cover a service coming back up.
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** attempt));
+    }
+  }
+}
+
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
@@ -102,7 +129,7 @@ export function AuthProvider({ children }) {
       const user = JSON.parse(storedEmailUser);
       setCurrentUser({ uid: user.userId, email: user.gmail });
       // Refresh from DB to get latest data
-      getUser(user.userId)
+      withRetry(() => getUser(user.userId))
         .then((userData) => {
           if (userData) {
             setDbUser(userData);
@@ -133,10 +160,15 @@ export function AuthProvider({ children }) {
         try {
           // Refreshing the page lands here, which re-exchanges the Firebase
           // token for a fresh session token.
-          const response = await createOrGetUser(await user.getIdToken());
+          const response = await withRetry(async () =>
+            createOrGetUser(await user.getIdToken())
+          );
           setDbUser(response.user);
           warmUpMlServer();
         } catch (error) {
+          // Out of retries. Leave dbUser null so the tour stays shut rather than
+          // mistaking the missing record for a new account, and let the pages
+          // surface the failure.
           console.error("Error fetching user data:", error);
         }
       } else {

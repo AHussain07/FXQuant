@@ -60,8 +60,15 @@ export default function useOnboardingTour(userId, page = "dashboard") {
     [userId]
   );
 
+  // `hasSeenTutorial` is only meaningful once the user record has actually
+  // arrived. While dbUser is still null -- or failed to load -- the flag reads
+  // as undefined, which is indistinguishable from "false" and would run the
+  // tour at an established account. Wait for the record before deciding.
+  const dbUserLoaded = Boolean(dbUser);
+  const hasSeenTutorial = dbUser?.hasSeenTutorial;
+
   useEffect(() => {
-    if (!userId || dbUser?.hasSeenTutorial || !phase) return;
+    if (!userId || !dbUserLoaded || hasSeenTutorial || !phase) return;
 
     // Only run the phase that matches the current page
     if (page === "dashboard" && phase === "dashboard_intro") {
@@ -73,7 +80,9 @@ export default function useOnboardingTour(userId, page = "dashboard") {
     if (page === "market" && phase === "market_trading") {
       return runMarketTrading(userId, driverRef, refreshUserData);
     }
-  }, [userId, page, phase, dbUser?.hasSeenTutorial, navigate, skipTour, advancePhase, refreshUserData]);
+    // Primitives, not dbUser itself: refreshUserData hands back a new object on
+    // every call, and depending on its identity would restart the tour mid-run.
+  }, [userId, page, phase, dbUserLoaded, hasSeenTutorial, navigate, skipTour, advancePhase, refreshUserData]);
 
   return { driverRef, skipTour, advancePhase, phase };
 }
