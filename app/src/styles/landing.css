@@ -1,374 +1,723 @@
-.container {
+/**
+ * Landing page.
+ *
+ * Everything here is namespaced `lp-` so it cannot collide with the global
+ * component styles the rest of the app relies on. The exception is the email
+ * modal, which only this page renders.
+ *
+ * The palette is black and blue and nothing else: blue carries the positive
+ * P/L, the curve, and every accent. One muted red exists, on the max-loss rail,
+ * where losing money is the thing being expressed and a blue bar would lie.
+ */
+
+.lp {
+  --void: #05070b;
+  --panel: #0a0e15;
+  --panel-lift: #0e1420;
+  --line: #1a2331;
+  --line-soft: #131a25;
+  --text: #e8eef6;
+  --dim: #7b8a9b;
+  --dimmer: #55606e;
+  --blue: #3d7bff;
+  --blue-bright: #6b9bff;
+  --blue-deep: #1e4fd8;
+  --blue-wash: rgba(61, 123, 255, 0.1);
+  --loss: #d0455c;
+
+  --display: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--void);
+  color: var(--text);
 }
 
-.main {
+.lp main {
   flex: 1;
 }
 
-.hero-section {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding-top: 64px;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 10;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 96px 24px;
-  text-align: center;
-}
-
-.hero-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.hero-title {
-  font-size: 3rem;
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-}
-
-.hero-title-normal {
-  color: var(--foreground);
-}
-
-.hero-title-gradient {
-  background: linear-gradient(to right, #60a5fa, #3b82f6, #22d3ee);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero-description {
-  font-size: 1.25rem;
-  color: var(--muted-foreground);
-  max-width: 680px;
-  margin: 0 auto;
-  line-height: 1.65;
-}
-
-/* Simpler hero on phones — hide the descriptive paragraph */
-@media (max-width: 639px) {
-  .hero-description {
-    display: none;
-  }
-}
-
-.hero-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding-top: 32px;
-}
-
-.decorative-grid {
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
-}
-
-.gradient-mesh {
-  position: absolute;
+.lp-shell {
   width: 100%;
-  height: 100%;
-  background: radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 50%, rgba(6, 182, 212, 0.25) 0%, transparent 50%);
-  filter: blur(80px);
-  z-index: 0;
-}
-
-.features-section {
-  position: relative;
-  padding: 96px 0;
-  background-color: rgba(20, 20, 24, 0.5);
-}
-
-.features-container {
-  max-width: 1280px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-.features-header {
-  text-align: center;
-  margin-bottom: 64px;
-}
-
-.features-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--foreground);
-  margin-bottom: 16px;
-  letter-spacing: -0.02em;
-}
-
-.features-description {
-  font-size: 1.125rem;
-  color: var(--muted-foreground);
-  max-width: 672px;
-  margin: 0 auto;
-}
-
-.features-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-}
-
-.feature-card {
-  position: relative;
-  box-sizing: border-box;
-  flex: 0 1 100%;
-  background-color: rgba(24, 24, 28, 0.6);
-  border: 1px solid rgba(39, 39, 42, 0.6);
-  border-radius: 14px;
-  padding: 28px 24px;
-  transition: transform 0.25s ease, border-color 0.25s ease,
-    box-shadow 0.25s ease, background-color 0.25s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(59, 130, 246, 0.45);
-  background-color: rgba(28, 28, 34, 0.75);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(59, 130, 246, 0.06);
-}
-
-.feature-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Mono is the native type of a trading terminal: every label, price, and
+   figure on this page is set in it. */
+.lp-eyebrow {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue);
   margin-bottom: 18px;
 }
 
-.feature-icon-primary {
-  background-color: rgba(59, 130, 246, 0.14);
-  border: 1px solid rgba(59, 130, 246, 0.25);
-}
-
-.feature-icon-accent {
-  background-color: rgba(6, 182, 212, 0.14);
-  border: 1px solid rgba(6, 182, 212, 0.25);
-}
-
-.feature-title {
-  font-size: 1.125rem;
+.lp-h2 {
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
   font-weight: 600;
-  color: var(--foreground);
-  margin-bottom: 10px;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text);
 }
 
-.feature-description {
-  color: var(--muted-foreground);
-  line-height: 1.65;
-  font-size: 0.9375rem;
+/* ── Hero ─────────────────────────────────────────────────────── */
+
+.lp-hero {
+  position: relative;
+  padding: 132px 0 84px;
+  overflow: hidden;
 }
 
-.button {
+/* A faint plotting grid -- the graph paper a chart is drawn on, not decoration
+   for its own sake. Fades out before it reaches the content. */
+.lp-grid-field {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 10%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 10%, transparent 75%);
+  pointer-events: none;
+}
+
+.lp-hero-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 56px;
+  align-items: center;
+}
+
+.lp-title {
+  font-family: var(--display);
+  font-size: clamp(2.25rem, 4.2vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.06;
+  color: var(--text);
+  margin-bottom: 22px;
+  text-wrap: balance;
+}
+
+.lp-title-quiet {
+  color: var(--dim);
+  font-weight: 500;
+}
+
+.lp-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.lp-close .lp-cta {
+  justify-content: center;
+}
+
+.lp-fineprint {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--dimmer);
+  margin-top: 20px;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+
+/* Both auth routes are equally valid, so the two buttons are the same size and
+   neither is visually demoted. min-width holds them equal even though the Google
+   label carries an icon and the email one does not. */
+.lp-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  padding: 12px 32px;
-  border-radius: 6px;
-  font-size: 1rem;
+  gap: 10px;
+  height: 48px;
+  min-width: 220px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9375rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  border: none;
+  border: 1px solid transparent;
+  transition: background-color 0.18s ease, border-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.lp-btn-primary {
+  background: var(--blue);
+  color: #fff;
+}
+
+.lp-btn-primary:hover {
+  background: var(--blue-deep);
+  transform: translateY(-1px);
+}
+
+.lp-btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.lp-btn-ghost:hover {
+  border-color: var(--blue);
+  background: var(--blue-wash);
+  transform: translateY(-1px);
+}
+
+.lp-btn:focus-visible,
+.email-modal-submit:focus-visible,
+.email-modal-resend:focus-visible,
+.email-modal-close:focus-visible {
+  outline: 2px solid var(--blue-bright);
+  outline-offset: 2px;
+}
+
+/* ── Signature: the example challenge panel ───────────────────── */
+
+.lp-panel {
+  background: linear-gradient(180deg, var(--panel-lift), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(61, 123, 255, 0.05);
+}
+
+.lp-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.lp-panel-tag {
+  display: block;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.lp-panel-sub {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-top: 5px;
+}
+
+.lp-chip {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--blue);
+  background: var(--blue-wash);
+  border: 1px solid rgba(61, 123, 255, 0.22);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.lp-equity {
+  padding: 20px 0 4px;
+}
+
+.lp-equity-figure {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.lp-equity-value {
+  font-family: var(--mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lp-equity-delta {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--blue-bright);
+}
+
+.lp-curve {
+  display: block;
+  width: 100%;
+  height: 96px;
+  margin-top: 14px;
+}
+
+/* The curve draws itself once, on load. It is the only motion on the page --
+   an equity curve being plotted is the product's whole promise. */
+.lp-curve-line {
+  stroke-dasharray: 640;
+  stroke-dashoffset: 640;
+  animation: lp-draw 1.5s cubic-bezier(0.33, 1, 0.68, 1) 0.15s forwards;
+}
+
+.lp-curve-fill {
+  opacity: 0;
+  animation: lp-fade 0.9s ease 0.9s forwards;
+}
+
+@keyframes lp-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes lp-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+.lp-panel-foot {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.lp-foot-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lp-foot-label {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+
+.lp-foot-value {
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+/* The payoff of the loop: a reason the trader wrote down, scored against what it
+   actually earned. This is the one line on the page that no chart can state. */
+.lp-insight {
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 10px;
+  background: var(--blue-wash);
+  border: 1px solid rgba(61, 123, 255, 0.2);
+}
+
+.lp-insight-label {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-bright);
+}
+
+.lp-insight-value {
+  font-family: var(--display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.lp-insight-meta {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--dim);
+}
+
+/* ── Pair strip ───────────────────────────────────────────────── */
+
+.lp-rail-strip {
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  background: rgba(10, 14, 21, 0.6);
+}
+
+/* An LED board, not a list. Full bleed rather than inside .lp-shell, and the
+   ends are masked so quotes fade in and out instead of popping at the edges. */
+.lp-marquee {
+  overflow: hidden;
+  padding: 16px 0;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+/* The track holds two identical laps and slides by exactly half its own width,
+   so the moment it resets, the second lap is sitting where the first started
+   and the seam is invisible. */
+.lp-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: lp-scroll 60s linear infinite;
+}
+
+@keyframes lp-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.lp-marquee:hover .lp-marquee-track {
+  animation-play-state: paused;
+}
+
+/* Never wraps, at any width: on a phone the quotes scroll past rather than
+   stacking into a column. */
+.lp-tick {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0 26px;
   white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 0.8125rem;
 }
 
-.button-lg {
-  height: 48px;
-  padding: 0 32px;
-}
-
-.button-google {
-  background-color: white;
-  color: #1f1f1f;
+.lp-tick-symbol {
   font-weight: 500;
+  color: var(--text);
 }
 
-.button-google:hover {
-  background-color: #f5f5f5;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+.lp-tick-price {
+  color: var(--dim);
 }
 
-.button-google:active {
-  transform: translateY(0);
+.lp-tick-bias {
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.button-email {
-  background-color: #3b82f6;
-  color: white;
-  font-weight: 500;
-  border: 1px solid rgba(59, 130, 246, 0.5);
+.lp-bias-bullish {
+  color: var(--blue-bright);
 }
 
-.button-email:hover {
-  background-color: #2563eb;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-  transform: translateY(-2px);
+.lp-bias-bearish {
+  color: var(--loss);
 }
 
-.button-email:active {
-  transform: translateY(0);
+.lp-bias-neutral {
+  color: var(--dimmer);
 }
 
-/* Email Auth Modal */
+/* ── Sections ─────────────────────────────────────────────────── */
+
+.lp-section {
+  padding: 92px 0;
+}
+
+.lp-section-alt {
+  background: linear-gradient(180deg, transparent, rgba(10, 14, 21, 0.85));
+  border-top: 1px solid var(--line-soft);
+}
+
+.lp-section-head {
+  max-width: 44rem;
+  margin-bottom: 48px;
+}
+
+/* ── Steps: numbered because the challenge genuinely is a sequence ── */
+
+.lp-steps {
+  display: grid;
+  gap: 1px;
+  background: var(--line-soft);
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  overflow: hidden;
+  list-style: none;
+}
+
+.lp-step {
+  background: var(--void);
+  padding: 30px 26px;
+}
+
+.lp-step-num {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 16px;
+}
+
+.lp-step-title {
+  font-family: var(--display);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.lp-step-body {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--dim);
+}
+
+/* ── Capability bento ─────────────────────────────────────────── */
+
+.lp-bento {
+  display: grid;
+  gap: 16px;
+}
+
+.lp-card {
+  background: var(--panel);
+  border: 1px solid var(--line-soft);
+  border-radius: 14px;
+  padding: 26px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.lp-card:hover {
+  border-color: rgba(61, 123, 255, 0.3);
+  background: var(--panel-lift);
+}
+
+.lp-card-title {
+  font-family: var(--display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.lp-card-wide .lp-card-title {
+  font-size: 1.4375rem;
+}
+
+.lp-card-body {
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--dim);
+  max-width: 34rem;
+}
+
+/* The model's actual output shape -- pair, call, confidence, driver -- shown
+   rather than described. On wide screens it sits beside the copy as the
+   right-hand column, so the card reads as a claim and its evidence. */
+.lp-verdict {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--void);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  align-content: center;
+}
+
+.lp-verdict-pair {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.lp-verdict-call {
+  justify-self: start;
+}
+
+.lp-verdict-call {
+  color: var(--blue-bright);
+  background: var(--blue-wash);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+.lp-verdict-conf,
+.lp-verdict-driver {
+  color: var(--dim);
+}
+
+.lp-verdict-driver {
+  color: var(--dimmer);
+}
+
+/* ── Closing ──────────────────────────────────────────────────── */
+
+.lp-close {
+  padding: 96px 0 112px;
+  border-top: 1px solid var(--line-soft);
+  text-align: center;
+}
+
+/* ── Email modal ──────────────────────────────────────────────── */
+
 .email-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: rgba(3, 5, 8, 0.78);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
+  padding: 16px;
 }
 
 .email-modal {
   position: relative;
-  background: #18181b;
-  border: 1px solid #27272a;
-  border-radius: 12px;
-  padding: 32px;
+  background: var(--panel-lift, #0e1420);
+  border: 1px solid #1a2331;
+  border-radius: 14px;
+  padding: 30px;
   width: 100%;
   max-width: 420px;
-  margin: 0 16px;
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.95);
 }
 
 .email-modal-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 14px;
+  right: 14px;
   background: none;
   border: none;
-  color: #71717a;
+  color: #55606e;
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
-  transition: color 0.2s;
+  border-radius: 6px;
+  transition: color 0.18s;
 }
 
 .email-modal-close:hover {
-  color: #a1a1aa;
+  color: #e8eef6;
 }
 
 .email-modal-title {
-  font-size: 1.5rem;
+  font-family: "Inter Tight", -apple-system, sans-serif;
+  font-size: 1.4375rem;
   font-weight: 600;
-  color: var(--foreground);
+  letter-spacing: -0.02em;
+  color: #e8eef6;
   margin-bottom: 8px;
 }
 
 .email-modal-subtitle {
   font-size: 0.875rem;
-  color: #a1a1aa;
-  margin-bottom: 24px;
-  line-height: 1.5;
+  color: #7b8a9b;
+  margin-bottom: 22px;
+  line-height: 1.55;
 }
 
 .email-modal-input {
   width: 100%;
-  padding: 12px 16px;
-  background: #0a0a0c;
-  border: 1px solid #27272a;
+  padding: 12px 14px;
+  background: #05070b;
+  border: 1px solid #1a2331;
   border-radius: 8px;
-  color: var(--foreground);
-  font-size: 1rem;
+  color: #e8eef6;
+  font-size: 0.9375rem;
+  font-family: inherit;
   outline: none;
-  transition: border-color 0.2s;
-  box-sizing: border-box;
+  transition: border-color 0.18s;
 }
 
 .email-modal-input:focus {
-  border-color: #3b82f6;
+  border-color: #3d7bff;
 }
 
 .email-modal-input::placeholder {
-  color: #52525b;
+  color: #55606e;
 }
 
 .email-modal-code-input {
   text-align: center;
-  font-size: 1.125rem;
-  letter-spacing: 6px;
-  font-weight: 600;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 1.25rem;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  font-weight: 700;
 }
 
 .email-modal-error {
-  color: #ef4444;
-  font-size: 0.875rem;
-  margin-top: 8px;
-  margin-bottom: 0;
+  color: #d0455c;
+  font-size: 0.8125rem;
+  margin-top: 10px;
 }
 
 .email-modal-submit {
   width: 100%;
   height: 44px;
   margin-top: 16px;
-  background: #3b82f6;
-  color: white;
+  background: #3d7bff;
+  color: #fff;
   border: none;
   border-radius: 8px;
   font-size: 0.9375rem;
+  font-family: inherit;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.18s;
 }
 
 .email-modal-submit:hover {
-  background: #2563eb;
+  background: #1e4fd8;
 }
 
 .email-modal-submit:disabled {
-  background: #1e3a5f;
+  background: #1c2b4a;
+  color: #7b8a9b;
   cursor: not-allowed;
 }
 
 .email-modal-resend {
   width: 100%;
-  height: 44px;
+  height: 42px;
   margin-top: 8px;
   background: none;
-  color: #a1a1aa;
-  border: 1px solid #27272a;
+  color: #7b8a9b;
+  border: 1px solid #1a2331;
   border-radius: 8px;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
+  font-family: inherit;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.18s, border-color 0.18s;
 }
 
 .email-modal-resend:hover {
-  color: var(--foreground);
-  border-color: #3f3f46;
+  color: #e8eef6;
+  border-color: #2a3648;
 }
 
 .email-modal-resend:disabled {
@@ -376,42 +725,98 @@
   cursor: not-allowed;
 }
 
-@media (min-width: 640px) {
-  .hero-cta {
-    flex-direction: row;
-  }
-}
+/* ── Responsive ───────────────────────────────────────────────── */
 
 @media (min-width: 768px) {
-  .hero-title {
-    font-size: 4rem;
+  .lp-steps {
+    grid-template-columns: repeat(3, 1fr);
   }
 
-  .hero-description {
-    font-size: 1.5rem;
+  .lp-bento {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .feature-card {
-    /* two per row: subtract the single 20px gap */
-    flex-basis: calc((100% - 20px) / 2);
-  }
-
-  .features-title {
-    font-size: 3rem;
+  .lp-card-wide {
+    grid-column: span 2;
   }
 }
 
 @media (min-width: 1024px) {
-  .feature-card {
-    /* four per row: subtract the three 20px gaps, trailing row stays centred */
-    flex-basis: calc((100% - 60px) / 4);
+  .lp-hero {
+    padding: 152px 0 104px;
   }
 
-  .hero-content {
-    padding: 96px 32px;
+  .lp-hero-inner {
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 72px;
   }
 
-  .features-container {
-    padding: 0 32px;
+  .lp-panel {
+    padding: 26px;
+  }
+
+  .lp-bento {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* The bias card takes the full width; the remaining four sit in one row
+     beneath it, which is exactly a four-column row with nothing stranded. */
+  /* Row gap stays at zero: the eyebrow, heading and body are one block of prose
+     and space themselves with their own margins. Only the columns are gapped. */
+  .lp-card-wide {
+    grid-column: span 4;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    grid-template-rows: auto auto auto;
+    column-gap: 44px;
+    row-gap: 0;
+    align-content: center;
+    padding: 34px;
+  }
+
+  .lp-card-wide .lp-eyebrow,
+  .lp-card-wide .lp-card-title,
+  .lp-card-wide .lp-card-body {
+    grid-column: 1;
+  }
+
+  /* The verdict spans all three rows of the prose column, so the claim and its
+     evidence sit level with each other. */
+  .lp-card-wide .lp-verdict {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    margin-top: 0;
+    align-self: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-curve-line {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .lp-curve-fill {
+    animation: none;
+    opacity: 1;
+  }
+
+  /* Stop the ticker, but let it be scrolled by hand: a frozen marquee would
+     otherwise hide every quote past the right-hand edge. */
+  .lp-marquee-track {
+    animation: none;
+  }
+
+  .lp-marquee {
+    overflow-x: auto;
+  }
+
+  .lp-btn,
+  .lp-card {
+    transition: none;
+  }
+
+  .lp-btn:hover {
+    transform: none;
   }
 }
