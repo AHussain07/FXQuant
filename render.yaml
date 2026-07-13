@@ -1,0 +1,66 @@
+# Render blueprint for the FXQuant backends.
+#
+# The React frontend is hosted on Vercel (root dir `app/`). These are the two
+# always-on backends it talks to:
+#   - fxquant-api : Express/MongoDB API  -> REACT_APP_API_URL
+#   - fxquant-ml  : FastAPI/XGBoost      -> REACT_APP_ML_URL
+#
+# Both run as long-lived processes (not serverless) because the Express service
+# holds a persistent Finnhub WebSocket + in-memory trade engine, and the ML
+# service reads/writes CSVs and model files on local disk.
+#
+# NOTE: on the free plan a service spins down after ~15 minutes of inactivity.
+# While the API is asleep the trade engine is not running, so TP/SL auto-close
+# does not fire until the service is woken by a request. Upgrade the api service
+# to a paid plan to make it truly always-on.
+#
+# Secrets are marked `sync: false` -> Render prompts for them on first deploy
+# instead of storing them in git.
+
+services:
+  # ---------------------------------------------------------------- Express API
+  - type: web
+    name: fxquant-api
+    runtime: node
+    plan: free
+    rootDir: app/server
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    envVars:
+      # Mongo Atlas connection string
+      - key: MONGODB_URI
+        sync: false
+      # Gmail account + app password used by nodemailer for email login codes
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_APP_PASSWORD
+        sync: false
+      # Finnhub key for the real-time FX price WebSocket
+      - key: FINNHUB_API_KEY
+        sync: false
+      # Comma-separated browser origins allowed by CORS.
+      # Set to the Vercel domain, e.g. https://fx-quant-v69h.vercel.app
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+  # ------------------------------------------------------------- FastAPI ML svc
+  - type: web
+    name: fxquant-ml
+    runtime: python
+    plan: free
+    rootDir: machine-learning-model
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      # Pinned because numpy 1.26.2 has no wheels for Python 3.13; without this
+      # Render's default interpreter would try to build it from source and fail.
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      # Tiingo price data API token (rotate the one exposed in git history)
+      - key: TIINGO_API_TOKEN
+        sync: false
+      # Same Vercel domain as above
+      - key: ALLOWED_ORIGINS
+        sync: false
