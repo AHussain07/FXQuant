@@ -45,7 +45,13 @@ export default function Market() {
     ) {
       advancePhase("market_trading");
     }
-  }, [needsAccountSetup, currentUser?.uid, phase, advancePhase]);
+  }, [
+    needsAccountSetup,
+    currentUser?.uid,
+    dbUser?.hasSeenTutorial,
+    phase,
+    advancePhase,
+  ]);
 
   useEffect(() => {
     if (location.state?.selectedInstrument) {
