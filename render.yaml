@@ -22,7 +22,10 @@ services:
   - type: web
     name: fxquant-api
     runtime: node
-    plan: free
+    # Paid plan: this service must never spin down. It holds the persistent
+    # Finnhub WebSocket and the in-memory trade engine that auto-closes trades
+    # on TP/SL -- neither runs while a free instance is asleep.
+    plan: starter
     rootDir: app/server
     buildCommand: npm install
     startCommand: node server.js
@@ -43,6 +46,14 @@ services:
       # Set to the Vercel domain, e.g. https://fx-quant-v69h.vercel.app
       - key: ALLOWED_ORIGINS
         sync: false
+      # Signing key for the API's own session tokens. Render generates a strong
+      # value on first deploy; it never needs to be known outside the service.
+      - key: JWT_SECRET
+        generateValue: true
+      # Used to verify Google sign-in ID tokens against Firebase's public keys.
+      # Not a secret -- it is already visible in the client bundle.
+      - key: FIREBASE_PROJECT_ID
+        value: tradingapp-ec38b
 
   # ------------------------------------------------------------- FastAPI ML svc
   - type: web

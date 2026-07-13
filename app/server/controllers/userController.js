@@ -9,6 +9,8 @@
 const User = require("../models/User");
 const Trade = require("../models/Trade");
 const JournalEntry = require("../models/JournalEntry");
+const { signAppToken } = require("../utils/appToken");
+const { verifyFirebaseIdToken } = require("../utils/firebaseToken");
 
 // Prop-firm challenge account sizes (USD starting balance).
 const PROP_ACCOUNT_BALANCES = {
@@ -46,30 +48,45 @@ const getUser = async (req, res) => {
 };
 
 /**
- * POST /api/users
- * Idempotent: returns the existing user if the userId is already registered,
- * otherwise creates a new one. Used by the auth flow on every login.
+ * POST /api/users/auth
+ * The Google sign-in exchange. The client sends the ID token Firebase issued
+ * it; we verify that token's signature and take the identity from it. The
+ * identity is never taken from the request body -- that would let a caller
+ * claim any account.
+ *
+ * Idempotent: returns the existing user if already registered, otherwise
+ * creates one. Responds with a session token used by every other route.
  */
 const createOrGetUser = async (req, res) => {
   try {
-    const { userId, gmail } = req.body;
-    if (!userId || !gmail) {
-      return res.status(400).json({ message: "userId and gmail are required" });
+    const { idToken } = req.body;
+    if (!idToken) {
+      return res.status(400).json({ message: "idToken is required" });
     }
 
-    const existing = await User.findOne({ userId });
+    let uid, email;
+    try {
+      ({ uid, email } = await verifyFirebaseIdToken(idToken));
+    } catch (error) {
+      console.error("Firebase token verification failed:", error.message);
+      return res.status(401).json({ message: "Invalid authentication token" });
+    }
+
+    const existing = await User.findOne({ userId: uid });
     if (existing) {
       return res.json({
         user: existing,
         isNewUser: false,
+        token: signAppToken(uid),
         message: "User authenticated successfully",
       });
     }
 
-    const user = await new User({ userId, gmail }).save();
+    const user = await new User({ userId: uid, gmail: email }).save();
     res.status(201).json({
       user,
       isNewUser: true,
+      token: signAppToken(uid),
       message: "New user created successfully",
     });
   } catch (error) {

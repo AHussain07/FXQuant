@@ -6,6 +6,7 @@ import {
   logOut,
 } from "../firebase/config";
 import { createOrGetUser, getUser } from "../services/api";
+import { clearToken } from "../services/authToken";
 import { ML_URL } from "../config";
 
 const AuthContext = createContext(null);
@@ -35,7 +36,9 @@ export function AuthProvider({ children }) {
 
       if (user) {
         try {
-          const response = await createOrGetUser(user.uid, user.email);
+          // Hand the API the token Firebase signed, not our own claim of who we
+          // are; it verifies that signature and hands back a session token.
+          const response = await createOrGetUser(await user.getIdToken());
           setDbUser(response.user);
           warmUpMlServer();
 
@@ -74,6 +77,7 @@ export function AuthProvider({ children }) {
       } else {
         await logOut();
       }
+      clearToken();
       setDbUser(null);
     } catch (error) {
       throw error;
@@ -127,7 +131,9 @@ export function AuthProvider({ children }) {
 
       if (user) {
         try {
-          const response = await createOrGetUser(user.uid, user.email);
+          // Refreshing the page lands here, which re-exchanges the Firebase
+          // token for a fresh session token.
+          const response = await createOrGetUser(await user.getIdToken());
           setDbUser(response.user);
           warmUpMlServer();
         } catch (error) {

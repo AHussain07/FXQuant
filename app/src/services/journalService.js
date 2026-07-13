@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { API_URL } from '../config';
+// Imported for its side effect: registers the axios interceptor that attaches
+// the session token to these requests.
+import './authToken';
 
 export const createJournalEntry = async (journalData) => {
   try {
