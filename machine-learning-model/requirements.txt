@@ -6,5 +6,8 @@ pydantic==2.11.3
 numpy==1.26.2
 pandas==2.2.3
 xgboost==3.2.0
+# Required at runtime by xgboost's XGBClassifier (its scikit-learn API), even
+# though nothing here imports sklearn directly.
+scikit-learn==1.5.2
 requests==2.32.3
 pytz==2024.2

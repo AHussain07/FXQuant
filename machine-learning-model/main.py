@@ -850,7 +850,8 @@ async def get_daily_bias(ticker: str):
 # =========================================================================
 
 NEWS_CSV = os.path.join(DATA_DIR, "weekly_news.csv")
-_news_cache: dict = {}   # {"iso_week": str, "rows": list[dict]}
+_news_cache: dict = {}   # {"iso_week": str, "rows": list[dict], "failed_at": datetime}
+_NEWS_RETRY_COOLDOWN = timedelta(minutes=30)
 
 try:
     from zoneinfo import ZoneInfo
@@ -921,6 +922,18 @@ def _scrape_and_cache() -> list[dict]:
     return rows
 
 
+def _read_news_csv() -> list[dict]:
+    """Return every row in the news CSV, or [] if it is missing or unreadable."""
+    import csv as _csv, os as _os
+    if not (_os.path.exists(NEWS_CSV) and _os.path.getsize(NEWS_CSV) > 0):
+        return []
+    try:
+        with open(NEWS_CSV, "r", encoding="utf-8") as f:
+            return list(_csv.DictReader(f))
+    except Exception:
+        return []
+
+
 def _load_news_rows() -> list[dict]:
     """
     Return this week's news rows, using the in-memory cache first,
@@ -933,24 +946,40 @@ def _load_news_rows() -> list[dict]:
         return _news_cache["rows"]
 
     # 2. Try reading from CSV (valid if it contains data from the current week)
-    import csv as _csv, os as _os
-    if _os.path.exists(NEWS_CSV) and _os.path.getsize(NEWS_CSV) > 0:
+    cached_rows = _read_news_csv()
+    if cached_rows:
         try:
-            with open(NEWS_CSV, "r", encoding="utf-8") as f:
-                rows = list(_csv.DictReader(f))
-            # Check the first row's timestamp belongs to the current week
-            if rows:
-                first_ts   = datetime.fromisoformat(rows[0]["timestamp"])
-                first_week = first_ts.astimezone(_london_tz).strftime("%G-%V")
-                if first_week == week:
-                    _news_cache["iso_week"] = week
-                    _news_cache["rows"]     = rows
-                    return rows
+            first_ts   = datetime.fromisoformat(cached_rows[0]["timestamp"])
+            first_week = first_ts.astimezone(_london_tz).strftime("%G-%V")
+            if first_week == week:
+                _news_cache["iso_week"] = week
+                _news_cache["rows"]     = cached_rows
+                return cached_rows
         except Exception:
             pass   # fall through to re-scrape
 
-    # 3. Scrape fresh data
-    rows = _scrape_and_cache()
+    # 3. Scrape fresh data. Forex Factory rate-limits datacenter IPs, so a
+    # hosted instance can get a 429 where a local run succeeds. Rather than
+    # fail the request, serve the last week we managed to cache and retry
+    # later — stale news beats no news. The cooldown stops every page load
+    # from re-hitting an upstream that is already throttling us.
+    last_failure = _news_cache.get("failed_at")
+    if (
+        cached_rows
+        and last_failure is not None
+        and datetime.now(timezone.utc) - last_failure < _NEWS_RETRY_COOLDOWN
+    ):
+        return cached_rows
+
+    try:
+        rows = _scrape_and_cache()
+    except Exception:
+        if cached_rows:
+            _news_cache["failed_at"] = datetime.now(timezone.utc)
+            return cached_rows
+        raise   # nothing cached to fall back on
+
+    _news_cache.pop("failed_at", None)
     _news_cache["iso_week"] = week
     _news_cache["rows"]     = rows
     return rows
