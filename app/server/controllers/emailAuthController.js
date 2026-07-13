@@ -15,6 +15,7 @@
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const User = require("../models/User");
+const { signAppToken } = require("../utils/appToken");
 
 const CODE_LIFETIME_MS = 10 * 60 * 1000;
 const CODE_BYTE_LENGTH = 3;
@@ -126,6 +127,7 @@ const verifyCode = async (req, res) => {
     res.json({
       user,
       isNewUser,
+      token: signAppToken(userId),
       message: isNewUser ? "New user created successfully" : "User authenticated successfully",
     });
   } catch (error) {

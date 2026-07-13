@@ -1,23 +1,21 @@
 import axios from "axios";
-import { auth } from "../firebase/config";
 import { API_URL } from "../config";
+import { authFetch, setToken } from "./authToken";
 
-const getAuthToken = async () => {
-  const user = auth.currentUser;
-  if (user) {
-    return await user.getIdToken();
-  }
-  return null;
-};
-
-export const createOrGetUser = async (userId, gmail) => {
+/**
+ * Exchange a Firebase ID token for one of our own session tokens.
+ *
+ * We send the ID token rather than a userId: the server takes the identity from
+ * the token's verified signature, so a caller cannot claim to be someone else.
+ */
+export const createOrGetUser = async (idToken) => {
   try {
-    const response = await fetch(`${API_URL}/users/auth`, {
+    const response = await authFetch(`${API_URL}/users/auth`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ userId, gmail }),
+      body: JSON.stringify({ idToken }),
     });
 
     if (!response.ok) {
@@ -25,7 +23,9 @@ export const createOrGetUser = async (userId, gmail) => {
       throw new Error(error.message || "Failed to authenticate user");
     }
 
-    return await response.json();
+    const data = await response.json();
+    setToken(data.token);
+    return data;
   } catch (error) {
     console.error("Auth error:", error);
     throw error;
@@ -34,7 +34,7 @@ export const createOrGetUser = async (userId, gmail) => {
 
 export const sendEmailCode = async (email) => {
   try {
-    const response = await fetch(`${API_URL}/email-auth/send-code`, {
+    const response = await authFetch(`${API_URL}/email-auth/send-code`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -54,7 +54,7 @@ export const sendEmailCode = async (email) => {
 
 export const verifyEmailCode = async (email, code) => {
   try {
-    const response = await fetch(`${API_URL}/email-auth/verify-code`, {
+    const response = await authFetch(`${API_URL}/email-auth/verify-code`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, code }),
@@ -65,7 +65,9 @@ export const verifyEmailCode = async (email, code) => {
       throw new Error(error.message || "Verification failed");
     }
 
-    return await response.json();
+    const data = await response.json();
+    setToken(data.token);
+    return data;
   } catch (error) {
     console.error("Verify email code error:", error);
     throw error;
@@ -74,7 +76,7 @@ export const verifyEmailCode = async (email, code) => {
 
 export const setupAccount = async (userId, accountType, balance) => {
   try {
-    const response = await fetch(`${API_URL}/users/${userId}/setup-account`, {
+    const response = await authFetch(`${API_URL}/users/${userId}/setup-account`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +98,7 @@ export const setupAccount = async (userId, accountType, balance) => {
 
 export const getUser = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/users/${userId}`);
+    const response = await authFetch(`${API_URL}/users/${userId}`);
 
     if (!response.ok) {
       if (response.status === 404) return null;
@@ -112,7 +114,7 @@ export const getUser = async (userId) => {
 
 export const createTrade = async (tradeData) => {
   try {
-    const response = await fetch(`${API_URL}/trades`, {
+    const response = await authFetch(`${API_URL}/trades`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -134,7 +136,7 @@ export const createTrade = async (tradeData) => {
 
 export const getUserTrades = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/trades/user/${userId}`);
+    const response = await authFetch(`${API_URL}/trades/user/${userId}`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch trades");
@@ -149,7 +151,7 @@ export const getUserTrades = async (userId) => {
 
 export const getOpenTrades = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/trades/user/${userId}/open`);
+    const response = await authFetch(`${API_URL}/trades/user/${userId}/open`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch open trades");
@@ -177,16 +179,11 @@ export const fetchTradeHistory = async (userId, filters = {}) => {
 
 export const closeTrade = async (tradeId, currentPrice) => {
   try {
-    const token = await getAuthToken();
+    // The session token is attached by the axios interceptor in ./authToken.
     const response = await axios.post(
       `${API_URL}/trades/${tradeId}/close`,
       { currentPrice },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
+      { headers: { "Content-Type": "application/json" } }
     );
     return response.data;
   } catch (error) {
@@ -197,7 +194,7 @@ export const closeTrade = async (tradeId, currentPrice) => {
 
 export const updateTradeLevels = async (tradeId, levels) => {
   try {
-    const response = await fetch(`${API_URL}/trades/${tradeId}/levels`, {
+    const response = await authFetch(`${API_URL}/trades/${tradeId}/levels`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -219,7 +216,7 @@ export const updateTradeLevels = async (tradeId, levels) => {
 
 export const cancelPendingOrder = async (tradeId) => {
   try {
-    const response = await fetch(`${API_URL}/trades/${tradeId}/cancel`, {
+    const response = await authFetch(`${API_URL}/trades/${tradeId}/cancel`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -240,7 +237,7 @@ export const cancelPendingOrder = async (tradeId) => {
 
 export const checkTradeTPSL = async (tradeId) => {
   try {
-    const response = await fetch(`${API_URL}/trades/${tradeId}/check`);
+    const response = await authFetch(`${API_URL}/trades/${tradeId}/check`);
 
     if (!response.ok) {
       throw new Error("Failed to check trade");
@@ -255,7 +252,7 @@ export const checkTradeTPSL = async (tradeId) => {
 
 export const getLivePrice = async (symbol) => {
   try {
-    const response = await fetch(`${API_URL}/prices/${symbol}`);
+    const response = await authFetch(`${API_URL}/prices/${symbol}`);
 
     if (!response.ok) {
       throw new Error("Failed to fetch price");
@@ -302,7 +299,7 @@ export const getJournalEntry = async (tradeId) => {
 };
 
 export const getDashboardStats = async (userId, timeframe = "all") => {
-  const response = await fetch(
+  const response = await authFetch(
     `${API_URL}/dashboard/${userId}?timeframe=${timeframe}`
   );
   if (!response.ok) throw new Error("Failed to fetch dashboard stats");
@@ -331,7 +328,7 @@ export const updateJournalEntry = async (tradeId, data) => {
 
 export const markTourComplete = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/users/${userId}/tour-complete`, {
+    const response = await authFetch(`${API_URL}/users/${userId}/tour-complete`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
     });
@@ -350,7 +347,7 @@ export const markTourComplete = async (userId) => {
 
 export const resetTradingAccount = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/users/${userId}/reset-trading`, {
+    const response = await authFetch(`${API_URL}/users/${userId}/reset-trading`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
@@ -369,7 +366,7 @@ export const resetTradingAccount = async (userId) => {
 
 export const resetFullAccount = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/users/${userId}/reset-full`, {
+    const response = await authFetch(`${API_URL}/users/${userId}/reset-full`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     });
@@ -388,7 +385,7 @@ export const resetFullAccount = async (userId) => {
 
 export const deleteAccount = async (userId) => {
   try {
-    const response = await fetch(`${API_URL}/users/${userId}`, {
+    const response = await authFetch(`${API_URL}/users/${userId}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });

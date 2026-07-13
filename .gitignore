@@ -24,3 +24,6 @@ __pycache__/
 *.pyc
 .vercel
 .env*
+
+# Playwright MCP session artifacts
+.playwright-mcp/
