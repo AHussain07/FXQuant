@@ -28,6 +28,22 @@ function setTourPhase(userId, phase) {
 // --- Tour phases ---
 // dashboard_intro -> market_setup -> market_trading -> complete
 
+// Small screens get their own steps: the nav links live behind the hamburger
+// and the market widgets sit behind tabs there, so the desktop steps would
+// point at elements that are hidden.
+const isSmallScreen = () =>
+  window.matchMedia("(max-width: 768px)").matches;
+
+// Returns a per-step hook that switches the market page to the given mobile
+// tab so the widget the step highlights is actually on screen. Clicks flush
+// synchronously in React, so the panel is visible before driver.js measures.
+const selectTab = (tabId) => () => {
+  const tab = document.getElementById(tabId);
+  if (tab && tab.getAttribute("aria-selected") !== "true") {
+    tab.click();
+  }
+};
+
 export default function useOnboardingTour(userId, page = "dashboard") {
   const driverRef = useRef(null);
   const navigate = useNavigate();
@@ -91,47 +107,79 @@ export default function useOnboardingTour(userId, page = "dashboard") {
 
 function runDashboardIntro(_userId, driverRef, navigate, skipTour, advancePhase) {
   const timeout = setTimeout(() => {
-    const steps = [
-      {
-        popover: {
-          title: "Welcome to FXQuant!",
-          description:
-            "Let's take a quick tour of the platform so you can start paper trading like a pro. You can close this tour at any time.",
-        },
-      },
-      {
-        element: "#tour-nav-links",
-        popover: {
-          title: "Navigation",
-          description:
-            "Use these links to move between the Dashboard, Trading page, and your Trade History.",
-        },
-      },
-      {
-        element: "#tour-nav-dashboard",
-        popover: {
-          title: "Dashboard",
-          description:
-            "You're here now! The Dashboard shows your trading performance including win rate, equity curve, and most traded pairs.",
-        },
-      },
-      {
-        element: "#tour-nav-history",
-        popover: {
-          title: "Trade History",
-          description:
-            "Review all your past trades here. Track your progress and learn from your wins and losses.",
-        },
-      },
-      {
-        element: "#tour-nav-trade",
-        popover: {
-          title: "Let's Set Up Your Account",
-          description:
-            "Next, we'll head to the Trade page where you can choose your account type and start trading. Click 'Let's Go!' to continue.",
-        },
-      },
-    ];
+    const steps = isSmallScreen()
+      ? [
+          {
+            popover: {
+              title: "Welcome to FXQuant!",
+              description:
+                "Let's take a quick tour of the platform so you can start paper trading like a pro. You can close this tour at any time.",
+            },
+          },
+          {
+            element: "#tour-nav-toggle",
+            popover: {
+              title: "Your Menu",
+              description:
+                "Everything lives in here: the Dashboard, the Trade page, your Trade History, and your account balance.",
+            },
+          },
+          {
+            popover: {
+              title: "Your Dashboard",
+              description:
+                "Once you start trading, this page keeps score: your equity curve, win rate, profit factor, and the setups that earn you the most.",
+            },
+          },
+          {
+            popover: {
+              title: "Let's Set Up Your Account",
+              description:
+                "Next, we'll open the Trade page where you can choose your account type and start trading. Tap 'Let's Go!' to continue.",
+            },
+          },
+        ]
+      : [
+          {
+            popover: {
+              title: "Welcome to FXQuant!",
+              description:
+                "Let's take a quick tour of the platform so you can start paper trading like a pro. You can close this tour at any time.",
+            },
+          },
+          {
+            element: "#tour-nav-links",
+            popover: {
+              title: "Navigation",
+              description:
+                "Use these links to move between the Dashboard, Trading page, and your Trade History.",
+            },
+          },
+          {
+            element: "#tour-nav-dashboard",
+            popover: {
+              title: "Dashboard",
+              description:
+                "You're here now! The Dashboard shows your trading performance including win rate, equity curve, and most traded pairs.",
+            },
+          },
+          {
+            element: "#tour-nav-history",
+            popover: {
+              title: "Trade History",
+              description:
+                "Review all your past trades here. Track your progress and learn from your wins and losses.",
+            },
+          },
+          {
+            element: "#tour-nav-trade",
+            popover: {
+              title: "Let's Set Up Your Account",
+              description:
+                "Next, we'll head to the Trade page where you can choose your account type and start trading. Click 'Let's Go!' to continue.",
+            },
+          },
+        ];
 
     // Remove steps whose target elements are missing
     const filteredSteps = steps.filter(
@@ -263,62 +311,142 @@ function runMarketSetup(_userId, driverRef, skipTour, advancePhase) {
 
 function runMarketTrading(userId, driverRef, refreshUserData) {
   const timeout = setTimeout(() => {
-    const allSteps = [
-      {
-        popover: {
-          title: "Your Trading Interface",
-          description:
-            "Great, your account is ready! Let's walk through the tools you'll use to analyse the market and place trades.",
-        },
-      },
-      {
-        element: "#tour-chart",
-        popover: {
-          title: "Live Chart",
-          description:
-            "Real-time price charts powered by TradingView. You can draw trendlines, mark support and resistance levels, and switch timeframes.",
-        },
-      },
-      {
-        element: "#tour-watchlist",
-        popover: {
-          title: "Switch Trading Pairs",
-          description:
-            "Click any currency pair in the watchlist to load its chart and price data. Use this to quickly jump between the pairs you're tracking.",
-        },
-      },
-      {
-        element: "#tour-quick-trade",
-        popover: {
-          title: "Place a Trade",
-          description:
-            "Hit BUY or SELL to open the trading form. You'll set your position size, take profit, and stop loss before executing.",
-        },
-      },
-      {
-        element: "#tour-ml-indicators",
-        popover: {
-          title: "ML Analysis",
-          description:
-            "Our machine learning model provides daily bias predictions for each pair. Use these signals alongside your own analysis to make informed decisions.",
-        },
-      },
-      {
-        element: "#tour-news",
-        popover: {
-          title: "Economic News",
-          description:
-            "Stay on top of market-moving economic events. High-impact news releases can cause sudden price swings, so always check before trading.",
-        },
-      },
-      {
-        popover: {
-          title: "You're All Set!",
-          description:
-            "You now know your way around FXQuant. Pick a pair from the watchlist, check the ML analysis and news, then place your first trade. Good luck!",
-        },
-      },
-    ];
+    // After a tab switch the highlighted widget has just appeared; re-measure
+    // once layout settles so the highlight hugs the right box.
+    const refreshSoon = () => {
+      setTimeout(() => driverRef.current?.refresh(), 80);
+    };
+
+    const allSteps = isSmallScreen()
+      ? [
+          {
+            popover: {
+              title: "Your Trading Interface",
+              description:
+                "Great, your account is ready! Let's walk through the tools you'll use to analyse the market and place trades.",
+            },
+          },
+          {
+            element: "#tour-chart",
+            popover: {
+              title: "Live Chart",
+              description:
+                "Real-time price charts powered by TradingView. Pinch to zoom, draw levels, and switch timeframes.",
+            },
+          },
+          {
+            element: "#tour-tabbar",
+            popover: {
+              title: "Your Panels",
+              description:
+                "Trade, Watchlist, Bias, and News each live in a tab under the chart. We'll visit each one now.",
+            },
+          },
+          {
+            element: "#tour-quick-trade",
+            onHighlightStarted: selectTab("tour-tab-trade"),
+            onHighlighted: refreshSoon,
+            popover: {
+              title: "Place a Trade",
+              description:
+                "Tap Buy or Sell to open the order form. You'll set your position size, take profit, and stop loss before executing.",
+            },
+          },
+          {
+            element: "#tour-watchlist",
+            onHighlightStarted: selectTab("tour-tab-watchlist"),
+            onHighlighted: refreshSoon,
+            popover: {
+              title: "Switch Trading Pairs",
+              description:
+                "Tap any currency pair to load its chart and price data. The chart above follows whatever you pick.",
+            },
+          },
+          {
+            element: "#tour-ml-indicators",
+            onHighlightStarted: selectTab("tour-tab-bias"),
+            onHighlighted: refreshSoon,
+            popover: {
+              title: "ML Analysis",
+              description:
+                "Our machine learning model provides daily bias predictions for each pair. Use these signals alongside your own analysis.",
+            },
+          },
+          {
+            element: "#tour-news",
+            onHighlightStarted: selectTab("tour-tab-news"),
+            onHighlighted: refreshSoon,
+            popover: {
+              title: "Economic News",
+              description:
+                "High-impact news releases can cause sudden price swings, so always check here before trading.",
+            },
+          },
+          {
+            onHighlightStarted: selectTab("tour-tab-trade"),
+            popover: {
+              title: "You're All Set!",
+              description:
+                "You now know your way around FXQuant. Pick a pair, check the bias and news, then place your first trade. Good luck!",
+            },
+          },
+        ]
+      : [
+          {
+            popover: {
+              title: "Your Trading Interface",
+              description:
+                "Great, your account is ready! Let's walk through the tools you'll use to analyse the market and place trades.",
+            },
+          },
+          {
+            element: "#tour-chart",
+            popover: {
+              title: "Live Chart",
+              description:
+                "Real-time price charts powered by TradingView. You can draw trendlines, mark support and resistance levels, and switch timeframes.",
+            },
+          },
+          {
+            element: "#tour-watchlist",
+            popover: {
+              title: "Switch Trading Pairs",
+              description:
+                "Click any currency pair in the watchlist to load its chart and price data. Use this to quickly jump between the pairs you're tracking.",
+            },
+          },
+          {
+            element: "#tour-quick-trade",
+            popover: {
+              title: "Place a Trade",
+              description:
+                "Hit BUY or SELL to open the trading form. You'll set your position size, take profit, and stop loss before executing.",
+            },
+          },
+          {
+            element: "#tour-ml-indicators",
+            popover: {
+              title: "ML Analysis",
+              description:
+                "Our machine learning model provides daily bias predictions for each pair. Use these signals alongside your own analysis to make informed decisions.",
+            },
+          },
+          {
+            element: "#tour-news",
+            popover: {
+              title: "Economic News",
+              description:
+                "Stay on top of market-moving economic events. High-impact news releases can cause sudden price swings, so always check before trading.",
+            },
+          },
+          {
+            popover: {
+              title: "You're All Set!",
+              description:
+                "You now know your way around FXQuant. Pick a pair from the watchlist, check the ML analysis and news, then place your first trade. Good luck!",
+            },
+          },
+        ];
 
     // Remove steps whose target elements are missing
     const filteredSteps = allSteps.filter(

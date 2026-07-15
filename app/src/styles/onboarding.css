@@ -97,3 +97,26 @@
 .driver-active-element {
   border-radius: 8px !important;
 }
+
+/* Small screens: keep the popover inside the viewport, tighten the type, and
+   give the buttons real tap targets */
+@media (max-width: 600px) {
+  .fxquant-tour-popover {
+    max-width: min(92vw, 330px) !important;
+    padding: 16px !important;
+  }
+
+  .fxquant-tour-popover .driver-popover-title {
+    font-size: 1rem !important;
+  }
+
+  .fxquant-tour-popover .driver-popover-description {
+    font-size: 0.85rem !important;
+  }
+
+  .fxquant-tour-popover .driver-popover-prev-btn,
+  .fxquant-tour-popover .driver-popover-next-btn,
+  .fxquant-tour-popover .driver-popover-close-btn-text {
+    padding: 10px 18px !important;
+  }
+}

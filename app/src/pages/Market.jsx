@@ -288,7 +288,7 @@ export default function Market() {
         {/* Mobile-only: tabs that switch which panel shows below the chart.
             Hidden while a trade or journal form has taken over the panel. */}
         {!showTradingForm && !showJournalForm && (
-          <div className="market-tabbar" role="tablist" aria-label="Trade panels">
+          <div className="market-tabbar" id="tour-tabbar" role="tablist" aria-label="Trade panels">
             {[
               ["trade", "Trade"],
               ["watchlist", "Watchlist"],
@@ -297,6 +297,7 @@ export default function Market() {
             ].map(([key, label]) => (
               <button
                 key={key}
+                id={`tour-tab-${key}`}
                 role="tab"
                 aria-selected={mobileTab === key}
                 className={`market-tab ${mobileTab === key ? "active" : ""}`}

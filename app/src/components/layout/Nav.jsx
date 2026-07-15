@@ -176,6 +176,7 @@ export function Nav({ showLinks = true }) {
             {/* Hamburger — only on small screens (CSS-controlled) */}
             {showLinks && (
               <button
+                id="tour-nav-toggle"
                 className={`nav-mobile-toggle ${isMobileMenuOpen ? "is-open" : ""}`}
                 aria-label="Toggle navigation menu"
                 aria-expanded={isMobileMenuOpen}
