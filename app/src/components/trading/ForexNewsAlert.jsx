@@ -102,14 +102,9 @@ export default function ForexNewsAlert({ symbol = "EURUSD" }) {
       </div>
 
       {(status === "loading" || status === "waking") && (
-        <div className="widget-wake" role="status">
+        <div className="widget-wake" role="status" aria-label="Loading news">
           <div className="skel skel-line-bar" aria-hidden="true" />
           <div className="skel skel-line-md" aria-hidden="true" />
-          <p className="widget-wake-note">
-            {status === "waking"
-              ? "Waking the news server — the first check can take up to a minute."
-              : "Checking for news…"}
-          </p>
         </div>
       )}
 

@@ -194,15 +194,10 @@ export default function DailyBiasDashboard({ symbol = "GBPUSD" }) {
           check back in a minute.
         </div>
       ) : (
-        <div className="widget-wake" role="status">
+        <div className="widget-wake" role="status" aria-label="Loading bias">
           <div className="skel skel-line-sm" aria-hidden="true" />
           <div className="skel skel-line-md" aria-hidden="true" />
           <div className="skel skel-line-bar" aria-hidden="true" />
-          <p className="widget-wake-note">
-            {status === "waking"
-              ? "Waking the analysis server and training today's model — the first read can take up to a minute."
-              : "Running the model…"}
-          </p>
         </div>
       )}
     </div>

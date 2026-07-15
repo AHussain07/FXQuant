@@ -1660,14 +1660,6 @@
   padding: 4px 0;
 }
 
-.widget-wake-note {
-  font-family: var(--mono);
-  font-size: 0.6875rem;
-  line-height: 1.55;
-  color: var(--dim);
-  margin: 4px 0 0;
-}
-
 /* ── Account setup ─────────────────────────────────────────── */
 
 .account-setup-main {
