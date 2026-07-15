@@ -143,6 +143,60 @@ h3 {
   letter-spacing: -0.02em;
 }
 
+/* ── Skeleton loading primitive ────────────────────────────── */
+/* A quiet placeholder block with a slow shimmer. Shapes are sized by the
+   component that uses it; reduced-motion users get a static block. */
+.skel {
+  position: relative;
+  overflow: hidden;
+  background: var(--line-soft);
+  border-radius: 6px;
+}
+
+.skel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(123, 138, 155, 0.1),
+    transparent
+  );
+  animation: skel-sweep 1.8s ease-in-out infinite;
+}
+
+@keyframes skel-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel::after {
+    animation: none;
+  }
+}
+
+/* Common skeleton line shapes */
+.skel-line-sm {
+  height: 10px;
+  width: 40%;
+}
+
+.skel-line-md {
+  height: 18px;
+  width: 70%;
+}
+
+.skel-line-bar {
+  height: 8px;
+  width: 100%;
+}
+
 /* Shared visible keyboard focus */
 button:focus-visible,
 a:focus-visible,

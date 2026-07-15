@@ -7,6 +7,11 @@ const POLL_INTERVAL = 60_000;
 // mounts before the FastAPI ML server has finished booting.
 const ERROR_RETRY_INTERVAL = 3_000;
 
+// The deployed ML service sleeps when idle, and its first prediction for a
+// pair also downloads price history and trains the model. Failures inside
+// this window are presented as "warming up", not as errors.
+const WAKE_GRACE_MS = 120_000;
+
 // Module-level cache: survives component unmounts within the same browser session
 // TTL matches the server's 1-hour cache
 const BIAS_CACHE_TTL_MS = 60 * 60 * 1000;
@@ -14,9 +19,9 @@ const _biasCache = {};
 
 export default function DailyBiasDashboard({ symbol = "GBPUSD" }) {
   const [latestPrediction, setLatestPrediction] = useState(null);
-  const [status, setStatus] = useState("loading"); // "loading" | "live" | "error"
-  const [error, setError] = useState(null);
+  const [status, setStatus] = useState("loading"); // "loading" | "waking" | "live" | "error"
   const timerRef = useRef(null);
+  const firstTriedAtRef = useRef(Date.now());
 
   useEffect(() => {
     let cancelled = false;
@@ -33,7 +38,6 @@ export default function DailyBiasDashboard({ symbol = "GBPUSD" }) {
       if (cached && Date.now() < cached.expiresAt) {
         setLatestPrediction(cached.prediction);
         setStatus("live");
-        setError(null);
         scheduleNext(POLL_INTERVAL);
         return;
       }
@@ -59,13 +63,13 @@ export default function DailyBiasDashboard({ symbol = "GBPUSD" }) {
         _biasCache[symbol] = { prediction, expiresAt: Date.now() + BIAS_CACHE_TTL_MS };
         setLatestPrediction(prediction);
         setStatus("live");
-        setError(null);
         scheduleNext(POLL_INTERVAL);
       } catch (err) {
         if (cancelled) return;
         console.error("[DailyBiasDashboard] Fetch error:", err.message);
-        setError(err.message);
-        setStatus("error");
+        // Inside the wake window a failure is expected, not news
+        const elapsed = Date.now() - firstTriedAtRef.current;
+        setStatus(elapsed < WAKE_GRACE_MS ? "waking" : "error");
         scheduleNext(ERROR_RETRY_INTERVAL);
       }
     }
@@ -75,19 +79,27 @@ export default function DailyBiasDashboard({ symbol = "GBPUSD" }) {
     if (cached && Date.now() < cached.expiresAt) {
       setLatestPrediction(cached.prediction);
       setStatus("live");
-      setError(null);
     } else {
       // Reset state when symbol changes and no cache available
       setLatestPrediction(null);
       setStatus("loading");
-      setError(null);
+      firstTriedAtRef.current = Date.now();
     }
+
+    // A request against a sleeping server can hang rather than fail; after a
+    // few quiet seconds, say what's actually happening.
+    const wakeNoticeTimer = setTimeout(() => {
+      if (!cancelled) {
+        setStatus((s) => (s === "loading" ? "waking" : s));
+      }
+    }, 5000);
 
     fetchBias();
 
     return () => {
       cancelled = true;
       clearTimeout(timerRef.current);
+      clearTimeout(wakeNoticeTimer);
     };
   }, [symbol]);
 
@@ -108,14 +120,16 @@ export default function DailyBiasDashboard({ symbol = "GBPUSD" }) {
               ? "bias-dot-live"
               : status === "error"
               ? "bias-dot-offline"
-              : "bias-dot-offline"
+              : "bias-dot-waking"
           }`}
         />
         <span className="bias-status-text">
           {status === "live"
             ? `Live · ${symbol}`
             : status === "error"
-            ? `Error · ${symbol}`
+            ? `Offline · ${symbol}`
+            : status === "waking"
+            ? `Starting · ${symbol}`
             : `Loading · ${symbol}`}
         </span>
       </div>
@@ -174,11 +188,21 @@ export default function DailyBiasDashboard({ symbol = "GBPUSD" }) {
             <span>Predictions are not guaranteed. Always apply your own analysis.</span>
           </div>
         </>
-      ) : (
+      ) : status === "error" ? (
         <div className="bias-awaiting">
-          {status === "error"
-            ? `ML server error: ${error}`
-            : "Loading prediction…"}
+          The analysis server isn't responding. It keeps retrying on its own —
+          check back in a minute.
+        </div>
+      ) : (
+        <div className="widget-wake" role="status">
+          <div className="skel skel-line-sm" aria-hidden="true" />
+          <div className="skel skel-line-md" aria-hidden="true" />
+          <div className="skel skel-line-bar" aria-hidden="true" />
+          <p className="widget-wake-note">
+            {status === "waking"
+              ? "Waking the analysis server and training today's model — the first read can take up to a minute."
+              : "Running the model…"}
+          </p>
         </div>
       )}
     </div>

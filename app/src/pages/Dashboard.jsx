@@ -18,35 +18,81 @@ const TIMEFRAME_LABELS = {
   week: "Last week",
 };
 
+/**
+ * The deployed API sleeps when idle and takes up to a minute to wake, so the
+ * first request after a quiet spell often fails or hangs. Retry with backoff
+ * across that whole window instead of surfacing the first failure.
+ */
+const STATS_RETRY_ATTEMPTS = 6;
+const retryDelay = (attempt) => Math.min(1500 * 2 ** attempt, 12000);
+
+// After this long on the spinner, tell the user the server is waking up
+const SLOW_LOAD_NOTICE_MS = 5000;
+
 const Dashboard = () => {
   const { currentUser, dbUser } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [waking, setWaking] = useState(false);
   const [timeframe, setTimeframe] = useState("all");
+  const [retryNonce, setRetryNonce] = useState(0);
 
   // Onboarding tour — only triggers on first-ever login
   useOnboardingTour(currentUser?.uid, "dashboard");
 
   useEffect(() => {
-    const loadStats = async () => {
-      if (!currentUser) return;
+    if (!currentUser) return;
 
+    let cancelled = false;
+    const timers = [];
+    const sleep = (ms) =>
+      new Promise((resolve) => {
+        timers.push(setTimeout(resolve, ms));
+      });
+
+    const loadStats = async () => {
       setLoading(true);
-      try {
-        const data = await getDashboardStats(currentUser.uid, timeframe);
-        setStats(data);
-        setError(null);
-      } catch (err) {
-        console.error("Failed to load dashboard stats:", err);
-        setError("Failed to load dashboard data");
-      } finally {
-        setLoading(false);
+      setError(null);
+      setWaking(false);
+      timers.push(
+        setTimeout(() => {
+          if (!cancelled) setWaking(true);
+        }, SLOW_LOAD_NOTICE_MS)
+      );
+
+      for (let attempt = 0; attempt < STATS_RETRY_ATTEMPTS; attempt++) {
+        try {
+          const data = await getDashboardStats(currentUser.uid, timeframe);
+          if (cancelled) return;
+          setStats(data);
+          setError(null);
+          setLoading(false);
+          return;
+        } catch (err) {
+          console.error(
+            `Failed to load dashboard stats (attempt ${attempt + 1}):`,
+            err
+          );
+          if (cancelled) return;
+          if (attempt === STATS_RETRY_ATTEMPTS - 1) {
+            setError(true);
+            setLoading(false);
+            return;
+          }
+          await sleep(retryDelay(attempt));
+          if (cancelled) return;
+        }
       }
     };
 
     loadStats();
-  }, [currentUser, timeframe]);
+
+    return () => {
+      cancelled = true;
+      timers.forEach(clearTimeout);
+    };
+  }, [currentUser, timeframe, retryNonce]);
 
   const formatCurrency = (amount) => {
     const absAmount = Math.abs(amount);
@@ -70,7 +116,43 @@ const Dashboard = () => {
       <div className="dashboard-page">
         <Nav showLinks={true} />
         <div className="dashboard-container">
-          <div className="loading-state">Loading dashboard…</div>
+          <div className="dash-loading-note" role="status">
+            <span className="dash-loading-dot" />
+            {waking
+              ? "Waking the server — the first load after a quiet spell can take up to a minute."
+              : "Loading your performance…"}
+          </div>
+
+          {/* Skeleton mirrors the real layout so nothing jumps on arrival */}
+          <div className="dash-skeleton" aria-hidden="true">
+            <div className="skel-charts">
+              <div className="skel-panel">
+                <div className="skel skel-line-sm" />
+                <div className="skel skel-figure" />
+                <div className="skel skel-chart" />
+                <div className="skel-foot">
+                  <div className="skel" />
+                  <div className="skel" />
+                  <div className="skel" />
+                </div>
+              </div>
+              <div className="skel-panel">
+                <div className="skel skel-line-sm" />
+                <div className="skel skel-line-md" />
+                <div className="skel skel-line-bar" />
+                <div className="skel skel-line-bar" />
+                <div className="skel skel-line-md" />
+              </div>
+            </div>
+            <div className="skel-tiles">
+              {[0, 1, 2, 3].map((i) => (
+                <div className="skel-panel skel-tile" key={i}>
+                  <div className="skel skel-line-sm" />
+                  <div className="skel skel-line-md" />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -81,7 +163,20 @@ const Dashboard = () => {
       <div className="dashboard-page">
         <Nav showLinks={true} />
         <div className="dashboard-container">
-          <div className="error-state">{error}</div>
+          <div className="error-state">
+            <span className="dash-eyebrow">No response</span>
+            <h2>Couldn't load your dashboard</h2>
+            <p>
+              The server didn't answer after several tries. It may still be
+              waking up — trying again usually fixes it.
+            </p>
+            <button
+              className="retry-btn"
+              onClick={() => setRetryNonce((n) => n + 1)}
+            >
+              Try again
+            </button>
+          </div>
         </div>
       </div>
     );

@@ -1404,6 +1404,13 @@
   background: var(--dimmer);
 }
 
+/* Warming up: alive, just not ready yet */
+.bias-dot-waking {
+  background: var(--blue);
+  box-shadow: 0 0 6px var(--blue);
+  animation: pulse 1.4s infinite;
+}
+
 .bias-status-text {
   font-family: var(--mono);
   font-size: 0.625rem;
@@ -1641,6 +1648,24 @@
   color: var(--dim);
   text-align: center;
   padding: 20px 0;
+  line-height: 1.5;
+}
+
+/* ── Shared "server waking up" state for ML-backed widgets ── */
+
+.widget-wake {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.widget-wake-note {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  line-height: 1.55;
+  color: var(--dim);
+  margin: 4px 0 0;
 }
 
 /* ── Account setup ─────────────────────────────────────────── */
