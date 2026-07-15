@@ -498,43 +498,6 @@
   color: var(--dim);
 }
 
-/* Status line above the skeleton */
-.dash-loading-note {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--dim);
-  margin-bottom: 20px;
-  min-height: 20px;
-}
-
-.dash-loading-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--blue-bright);
-  box-shadow: 0 0 8px var(--blue);
-  animation: pulse-dot 1.6s ease-in-out infinite;
-  flex-shrink: 0;
-}
-
-@keyframes pulse-dot {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.35;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dash-loading-dot {
-    animation: none;
-  }
-}
-
 /* Skeleton layout mirrors the real dashboard */
 .dash-skeleton {
   display: flex;

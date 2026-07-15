@@ -26,15 +26,11 @@ const TIMEFRAME_LABELS = {
 const STATS_RETRY_ATTEMPTS = 6;
 const retryDelay = (attempt) => Math.min(1500 * 2 ** attempt, 12000);
 
-// After this long on the spinner, tell the user the server is waking up
-const SLOW_LOAD_NOTICE_MS = 5000;
-
 const Dashboard = () => {
   const { currentUser, dbUser } = useAuth();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [waking, setWaking] = useState(false);
   const [timeframe, setTimeframe] = useState("all");
   const [retryNonce, setRetryNonce] = useState(0);
 
@@ -54,12 +50,6 @@ const Dashboard = () => {
     const loadStats = async () => {
       setLoading(true);
       setError(null);
-      setWaking(false);
-      timers.push(
-        setTimeout(() => {
-          if (!cancelled) setWaking(true);
-        }, SLOW_LOAD_NOTICE_MS)
-      );
 
       for (let attempt = 0; attempt < STATS_RETRY_ATTEMPTS; attempt++) {
         try {
@@ -116,13 +106,6 @@ const Dashboard = () => {
       <div className="dashboard-page">
         <Nav showLinks={true} />
         <div className="dashboard-container">
-          <div className="dash-loading-note" role="status">
-            <span className="dash-loading-dot" />
-            {waking
-              ? "Waking the server — the first load after a quiet spell can take up to a minute."
-              : "Loading your performance…"}
-          </div>
-
           {/* Skeleton mirrors the real layout so nothing jumps on arrival */}
           <div className="dash-skeleton" aria-hidden="true">
             <div className="skel-charts">
