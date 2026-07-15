@@ -144,13 +144,23 @@ const TradeHistory = () => {
     return profit >= 0 ? `+$${absValue}` : `-$${absValue}`;
   };
 
+  const formatSymbol = (symbol) => {
+    if (!symbol) return "-";
+    return symbol.length === 6
+      ? `${symbol.slice(0, 3)}/${symbol.slice(3)}`
+      : symbol;
+  };
+
   return (
     <div className="trade-history-page">
       <Nav showLinks={true} />
 
       <div className="trade-history-container">
         <div className="history-header">
-          <h2>Trade History</h2>
+          <div className="history-heading">
+            <span className="dash-eyebrow">Closed trades</span>
+            <h2>Trade history</h2>
+          </div>
 
           <div className="history-header-right">
             <button
@@ -217,13 +227,13 @@ const TradeHistory = () => {
               {loading ? (
                 <tr>
                   <td colSpan="8" className="text-center">
-                    Loading history...
+                    Loading history…
                   </td>
                 </tr>
               ) : history.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="text-center">
-                    No closed trades found matching filters.
+                    No closed trades match these filters.
                   </td>
                 </tr>
               ) : (
@@ -231,7 +241,7 @@ const TradeHistory = () => {
                   const isProfit = trade.profit >= 0;
                   return (
                     <tr key={trade.tradeId} className="history-row">
-                      <td className="font-bold">{trade.symbol}</td>
+                      <td className="font-bold">{formatSymbol(trade.symbol)}</td>
                       <td>
                         <span className={`badge ${trade.orderType}`}>
                           {trade.orderType.toUpperCase()}
@@ -262,6 +272,64 @@ const TradeHistory = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Phone layout: one card per trade, no sideways scrolling */}
+        <div className="history-cards">
+          {loading ? (
+            <div className="history-cards-empty">Loading history…</div>
+          ) : history.length === 0 ? (
+            <div className="history-cards-empty">
+              No closed trades match these filters.
+            </div>
+          ) : (
+            history.map((trade) => {
+              const isProfit = trade.profit >= 0;
+              return (
+                <article className="history-card" key={trade.tradeId}>
+                  <div className="history-card-top">
+                    <div className="history-card-pair">
+                      <span className="history-card-symbol">
+                        {formatSymbol(trade.symbol)}
+                      </span>
+                      <span className={`badge ${trade.orderType}`}>
+                        {trade.orderType.toUpperCase()}
+                      </span>
+                    </div>
+                    <span
+                      className={`history-card-pl ${
+                        isProfit ? "text-win" : "text-loss"
+                      }`}
+                    >
+                      {formatProfitLoss(trade.profit)}
+                    </span>
+                  </div>
+
+                  <div className="history-card-meta">
+                    <span>{((trade.lotSize || 0) / 100000).toFixed(2)} lots</span>
+                    <span className="history-card-sep">·</span>
+                    <span>
+                      {trade.entryPrice?.toFixed(5)} → {trade.exitPrice?.toFixed(5)}
+                    </span>
+                  </div>
+
+                  <div className="history-card-foot">
+                    <span className="history-card-date">
+                      {formatDate(trade.closedAt)}
+                    </span>
+                    <button
+                      className={`view-journal-btn ${
+                        !trade.hasJournal ? "no-journal" : ""
+                      }`}
+                      onClick={() => setSelectedTradeId(trade.tradeId)}
+                    >
+                      {trade.hasJournal ? "View" : "Add"}
+                    </button>
+                  </div>
+                </article>
+              );
+            })
+          )}
         </div>
       </div>
 

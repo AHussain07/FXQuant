@@ -4,7 +4,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(3, 5, 8, 0.78);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,15 +14,16 @@
 }
 
 .journal-modal-content {
-  background-color: var(--card);
-  border-radius: 12px;
+  background-color: var(--panel-lift);
+  border: 1px solid var(--line);
+  border-radius: 14px;
   max-width: 600px;
   width: 100%;
   max-height: 90vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.95);
 }
 
 .journal-modal-header {
@@ -29,19 +31,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .journal-modal-header h2 {
   margin: 0;
-  color: var(--foreground);
+  color: var(--text);
+  font-family: var(--display);
   font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .journal-modal-close {
   background: none;
   border: none;
-  color: var(--muted-foreground);
+  color: var(--dim);
   font-size: 28px;
   cursor: pointer;
   padding: 0;
@@ -50,13 +55,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  transition: all 0.2s;
+  border-radius: 6px;
+  transition: color 0.2s, background-color 0.2s;
 }
 
 .journal-modal-close:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--foreground);
+  background-color: var(--panel);
+  color: var(--text);
 }
 
 .journal-modal-body {
@@ -70,7 +75,7 @@
 .journal-empty {
   text-align: center;
   padding: 40px 20px;
-  color: var(--muted-foreground);
+  color: var(--dim);
 }
 
 .journal-empty svg {
@@ -80,7 +85,7 @@
 
 .journal-empty h3 {
   margin: 0 0 8px 0;
-  color: var(--foreground);
+  color: var(--text);
 }
 
 .journal-empty p {
@@ -98,9 +103,12 @@
 
 .journal-section h3 {
   margin: 0 0 12px 0;
-  color: var(--foreground);
-  font-size: 1rem;
-  font-weight: 600;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
 }
 
 .journal-info-grid {
@@ -116,23 +124,26 @@
 }
 
 .journal-info-item label {
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  color: var(--dimmer);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.1em;
 }
 
 .journal-info-item span {
-  font-size: 1rem;
-  color: var(--foreground);
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  color: var(--text);
   font-weight: 600;
 }
 
 .journal-notes {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--void);
+  border: 1px solid var(--line-soft);
   border-radius: 8px;
   padding: 16px;
-  color: var(--foreground);
+  color: var(--text);
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
@@ -145,22 +156,24 @@
 }
 
 .confluence-tag {
-  background-color: rgba(99, 102, 241, 0.2);
-  color: #818cf8;
+  background-color: var(--blue-wash);
+  border: 1px solid rgba(61, 123, 255, 0.22);
+  color: var(--blue-bright);
   padding: 6px 12px;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
 }
 
 .journal-date {
-  font-size: 0.875rem;
-  color: var(--muted-foreground);
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--dim);
 }
 
 .journal-modal-footer {
   padding: 16px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--line-soft);
   display: flex;
   justify-content: flex-end;
   gap: 12px;
@@ -168,25 +181,25 @@
 
 .journal-close-btn {
   padding: 10px 24px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--foreground);
-  border: none;
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 }
 
 .journal-close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: var(--panel);
 }
 
 .text-green {
-  color: #4ade80;
+  color: var(--blue-bright);
 }
 
 .text-red {
-  color: #f87171;
+  color: var(--loss-bright);
 }
 
 .form-section {
@@ -197,23 +210,23 @@
   display: block;
   font-weight: 600;
   margin-bottom: 8px;
-  color: #e5e7eb;
+  color: var(--text);
 }
 
 .form-textarea {
   width: 100%;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--void);
+  border: 1px solid var(--line);
   border-radius: 8px;
-  color: white;
+  color: var(--text);
   font-family: inherit;
   resize: vertical;
 }
 
 .form-textarea:focus {
   outline: none;
-  border-color: #6366f1;
+  border-color: var(--blue);
 }
 
 .confluences-grid {
@@ -226,20 +239,21 @@
   display: flex;
   align-items: center;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--void);
+  border: 1px solid var(--line);
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color 0.2s, background-color 0.2s;
 }
 
 .confluence-checkbox:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--panel);
+  border-color: var(--blue-line);
 }
 
 .confluence-checkbox.selected {
-  background: rgba(99, 102, 241, 0.2);
-  border-color: #6366f1;
+  background: var(--blue-wash);
+  border-color: var(--blue);
 }
 
 .confluence-checkbox input {
@@ -252,30 +266,30 @@
 
 .journal-edit-btn {
   padding: 10px 20px;
-  background: #6366f1;
-  color: white;
-  border: none;
+  background: transparent;
+  color: var(--blue-bright);
+  border: 1px solid var(--blue-line);
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 }
 
 .journal-edit-btn:hover {
-  background: #5558e3;
+  background: var(--blue-wash);
 }
 
 .journal-submit-btn {
   padding: 10px 20px;
-  background: #10b981;
+  background: var(--blue);
   color: white;
   border: none;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
 }
 
 .journal-submit-btn:hover {
-  background: #059669;
+  background: var(--blue-deep);
 }

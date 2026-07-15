@@ -32,11 +32,11 @@
 }
 
 .trade-card.trade-buy {
-  border-left-color: #10b981;
+  border-left-color: var(--blue-bright);
 }
 
 .trade-card.trade-sell {
-  border-left-color: #ef4444;
+  border-left-color: var(--loss);
 }
 
 .trade-header {
@@ -60,13 +60,13 @@
 }
 
 .trade-type.buy {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
+  background: var(--blue-wash);
+  color: var(--blue-bright);
 }
 
 .trade-type.sell {
-  background: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  background: var(--loss-wash);
+  color: var(--loss);
 }
 
 .trade-details {
@@ -87,17 +87,17 @@
 }
 
 .trade-row .tp {
-  color: #10b981;
+  color: var(--blue-bright);
 }
 
 .trade-row .sl {
-  color: #ef4444;
+  color: var(--loss);
 }
 
 .close-trade-btn {
   width: 100%;
   padding: 10px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  background: var(--blue);
   color: white;
   border: none;
   border-radius: 6px;
@@ -108,7 +108,7 @@
 
 .close-trade-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 12px rgba(61, 123, 255, 0.4);
 }
 
 .close-trade-btn:disabled {
@@ -138,9 +138,9 @@
 }
 
 .pl-profit {
-  color: #10b981; /* Green */
+  color: var(--blue-bright); /* Green */
 }
 
 .pl-loss {
-  color: #ef4444; /* Red */
+  color: var(--loss); /* Red */
 }

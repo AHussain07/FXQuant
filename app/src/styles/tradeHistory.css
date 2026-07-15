@@ -1,55 +1,82 @@
+/**
+ * Trade history: the ledger. A ruled table on desktop, one card per trade on
+ * phones. Wins are blue, losses are the muted red, figures are mono.
+ */
+
 .trade-history-page {
   min-height: 100vh;
-  background-color: var(--background);
+  background-color: var(--void);
   padding-top: 80px;
 }
 
 .trade-history-container {
-  max-width: 1280px;
-  margin: 0 auto;
+  max-width: 1180px;
+  margin: 24px auto 0;
   padding: 24px;
-  background: var(--card);
-  border-radius: var(--radius);
-  color: var(--foreground);
-  margin-top: 24px;
+  background: linear-gradient(180deg, var(--panel-lift), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  color: var(--text);
 }
 
 .history-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
+  gap: 16px;
   margin-bottom: 24px;
+}
+
+.history-heading .dash-eyebrow {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 8px;
+}
+
+.history-heading h2 {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  line-height: 1.1;
+  margin: 0;
 }
 
 .history-header-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .history-filters {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .export-csv-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--primary);
+  background: var(--blue);
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: var(--radius);
+  padding: 9px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
-  transition: opacity 0.2s;
+  transition: background-color 0.2s;
   white-space: nowrap;
 }
 
 .export-csv-btn:hover:not(:disabled) {
-  opacity: 0.85;
+  background: var(--blue-deep);
 }
 
 .export-csv-btn:disabled {
@@ -58,19 +85,32 @@
 }
 
 .filter-select {
-  background: var(--input);
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  padding: 8px 12px;
-  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 9px 12px;
+  border-radius: 8px;
   outline: none;
   cursor: pointer;
-  font-family: inherit;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  transition: border-color 0.2s;
+}
+
+.filter-select:hover {
+  border-color: var(--blue-line);
 }
 
 .filter-select:focus {
-  border-color: var(--ring);
+  border-color: var(--blue);
 }
+
+.filter-select option {
+  background: var(--panel-lift);
+  color: var(--text);
+}
+
+/* ── Table (desktop / tablet) ──────────────────────────────── */
 
 /* Let only the table scroll sideways on small screens, not the whole page */
 .table-responsive {
@@ -87,55 +127,66 @@
 
 .history-table th {
   text-align: left;
-  padding: 16px;
-  background: var(--muted);
-  color: var(--muted-foreground);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--dimmer);
+  font-family: var(--mono);
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
 }
 
 .history-table td {
-  padding: 16px;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.95rem;
-  color: var(--foreground);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.history-row {
+  transition: background-color 0.15s;
 }
 
 .history-row:hover {
-  background-color: var(--secondary);
+  background-color: var(--panel-lift);
 }
 
 .badge {
-  padding: 4px 8px;
+  font-family: var(--mono);
+  padding: 3px 8px;
   border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .badge.buy {
-  background: rgba(16, 185, 129, 0.2);
-  color: #34d399;
+  background: var(--blue-wash);
+  color: var(--blue-bright);
 }
 
 .badge.sell {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
+  background: var(--loss-wash);
+  color: var(--loss-bright);
 }
 
 .text-win {
-  color: #10b981 !important;
+  color: var(--blue-bright) !important;
   font-weight: 600;
 }
 
 .text-loss {
-  color: #ef4444 !important;
+  color: var(--loss-bright) !important;
   font-weight: 600;
 }
 
 .text-muted {
-  color: #9ca3af;
-  font-size: 0.85rem;
+  color: var(--dim);
+  font-size: 0.75rem;
 }
 
 .font-bold {
@@ -144,38 +195,128 @@
 
 .text-center {
   text-align: center;
+  color: var(--dim);
 }
 
 .no-journal-text {
-  color: var(--muted-foreground);
+  color: var(--dim);
   font-size: 0.875rem;
 }
 
+/* One fixed size for both labels, so "View" and "Add" render identical
+   buttons — the width never depends on the text inside. */
 .view-journal-btn {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 6px 16px;
-  border-radius: 4px;
+  width: 72px;
+  padding: 7px 0;
+  text-align: center;
+  background: transparent;
+  color: var(--blue-bright);
+  border: 1px solid var(--blue-line);
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
   font-weight: 500;
-  transition: all 0.2s;
-  min-width: 62.1px;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .view-journal-btn:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+  background: var(--blue-wash);
+  border-color: var(--blue);
 }
 
+/* "Add" is the call to action — the journal entry that doesn't exist yet */
 .view-journal-btn.no-journal {
-  background: #10b981;
-  color: #e5e7eb;
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
 }
 
 .view-journal-btn.no-journal:hover {
-  background: #059669;
+  background: var(--blue-deep);
+  border-color: var(--blue-deep);
+}
+
+/* ── Card list (phones) ────────────────────────────────────── */
+
+.history-cards {
+  display: none;
+}
+
+.history-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-card-pair {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.history-card-symbol {
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.history-card-pl {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.history-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+  flex-wrap: wrap;
+}
+
+.history-card-sep {
+  color: var(--dimmer);
+}
+
+.history-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.history-card-date {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--dimmer);
+}
+
+.history-cards-empty {
+  padding: 48px 16px;
+  text-align: center;
+  color: var(--dim);
+  font-size: 0.875rem;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
 }
 
 /* --- Responsive: tablet & mobile --- */
@@ -189,7 +330,7 @@
   .history-header {
     flex-direction: column;
     align-items: stretch;
-    gap: 14px;
+    gap: 16px;
   }
 
   .history-header-right {
@@ -210,44 +351,20 @@
   .export-csv-btn {
     flex: 1 1 100%;
     justify-content: center;
+    padding: 12px 16px;
   }
 }
 
-/* Simpler table on phones: drop Lots / Entry / Exit, keeping
-   Symbol · Type · Result · Closed At · Journal. */
+/* Phones: the table leaves, the cards arrive */
 @media (max-width: 600px) {
-  .history-table {
-    min-width: 0;
-  }
-
-  .history-table th:nth-child(3),
-  .history-table td:nth-child(3),
-  .history-table th:nth-child(4),
-  .history-table td:nth-child(4),
-  .history-table th:nth-child(5),
-  .history-table td:nth-child(5) {
+  .table-responsive {
     display: none;
   }
 
-  /* Tighten so the remaining 5 columns fit without side-scroll */
-  .history-table th,
-  .history-table td {
-    padding: 12px 8px;
-    font-size: 0.82rem;
-  }
-
-  .history-table th {
-    font-size: 0.75rem;
-  }
-
-  .badge {
-    padding: 3px 6px;
-    font-size: 0.7rem;
-  }
-
-  .view-journal-btn {
-    padding: 6px 10px;
-    min-width: 0;
+  .history-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
@@ -258,11 +375,9 @@
 
   .trade-history-container {
     padding: 12px;
+    margin-top: 12px;
     border-radius: 0;
-  }
-
-  .history-table th,
-  .history-table td {
-    padding: 10px 6px;
+    border-left: none;
+    border-right: none;
   }
 }

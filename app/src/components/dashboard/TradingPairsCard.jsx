@@ -5,8 +5,8 @@ function TradingPairsCard({ mostTraded }) {
   if (!mostTraded || mostTraded.length === 0) {
     return (
       <div className="info-card">
-        <h3>Most Traded Pairs</h3>
-        <div className="empty-state">No trading data available</div>
+        <h3>Most traded pairs</h3>
+        <div className="empty-state">No trading data available yet.</div>
       </div>
     );
   }
@@ -15,12 +15,16 @@ function TradingPairsCard({ mostTraded }) {
 
   return (
     <div className="info-card">
-      <h3>Most Traded Pairs</h3>
+      <h3>Most traded pairs</h3>
       <div className="pairs-list">
         {mostTraded.map((pair, index) => (
           <div key={index} className="pair-item">
             <div className="pair-header">
-              <span className="pair-symbol">{pair.symbol}</span>
+              <span className="pair-symbol">
+                {pair.symbol && pair.symbol.length === 6
+                  ? `${pair.symbol.slice(0, 3)}/${pair.symbol.slice(3)}`
+                  : pair.symbol}
+              </span>
               <span className="pair-count">{pair.count} trades</span>
             </div>
             <div className="pair-bar">

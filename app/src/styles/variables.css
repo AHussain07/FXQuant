@@ -1,23 +1,60 @@
+/**
+ * FXQuant global design tokens.
+ *
+ * The identity comes from the landing page: black and blue and nothing else.
+ * Blue carries profit, buys, and bullish calls; one muted red exists for the
+ * places where losing money is the thing being expressed. Every figure and
+ * label is set in mono — the native type of a trading terminal.
+ *
+ * The legacy shadcn-style names (--background, --card, --primary, …) are kept
+ * and remapped so any stylesheet still using them inherits the new palette.
+ */
+
 :root {
-  --background: #0a0a0f;
-  --foreground: #ffffff;
-  --card: #141419;
-  --card-foreground: #ffffff;
-  --popover: #141418;
-  --popover-foreground: #ffffff;
-  --primary: #3b82f6;
+  /* Core palette */
+  --void: #05070b;
+  --panel: #0a0e15;
+  --panel-lift: #0e1420;
+  --line: #1a2331;
+  --line-soft: #131a25;
+  --text: #e8eef6;
+  --dim: #7b8a9b;
+  --dimmer: #55606e;
+  --blue: #3d7bff;
+  --blue-bright: #6b9bff;
+  --blue-deep: #1e4fd8;
+  --blue-wash: rgba(61, 123, 255, 0.1);
+  --blue-line: rgba(61, 123, 255, 0.25);
+  --loss: #d0455c;
+  --loss-bright: #e06378;
+  --loss-wash: rgba(208, 69, 92, 0.1);
+  --loss-line: rgba(208, 69, 92, 0.3);
+
+  /* Type */
+  --display: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --body: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+
+  /* Legacy names, remapped */
+  --background: var(--void);
+  --foreground: var(--text);
+  --card: var(--panel);
+  --card-foreground: var(--text);
+  --popover: var(--panel-lift);
+  --popover-foreground: var(--text);
+  --primary: var(--blue);
   --primary-foreground: #ffffff;
-  --secondary: #1a1a1f;
-  --secondary-foreground: #ffffff;
-  --muted: #1a1a1f;
-  --muted-foreground: #9ca3af;
-  --accent: #06b6d4;
+  --secondary: var(--panel-lift);
+  --secondary-foreground: var(--text);
+  --muted: var(--panel-lift);
+  --muted-foreground: var(--dim);
+  --accent: var(--blue-bright);
   --accent-foreground: #ffffff;
-  --destructive: #dc2626;
+  --destructive: var(--loss);
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: #27272a;
-  --ring: #3b82f6;
+  --border: var(--line);
+  --input: var(--panel-lift);
+  --ring: var(--blue);
   --radius: 0.5rem;
 }
 
@@ -48,8 +85,8 @@ body {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1px solid #52525b;
-  color: #71717a;
+  border: 1px solid var(--dimmer);
+  color: var(--dimmer);
   font-size: 0.6rem;
   font-style: italic;
   font-weight: 700;
@@ -64,14 +101,14 @@ body {
 }
 
 .info-icon-wrapper:hover .info-icon {
-  color: #93c5fd;
-  border-color: #3b82f6;
+  color: var(--blue-bright);
+  border-color: var(--blue);
 }
 
 .info-tooltip {
-  background-color: #2a2a33;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #d4d4d8;
+  background-color: var(--panel-lift);
+  border: 1px solid var(--line);
+  color: #d4dae2;
   font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.45;
@@ -82,7 +119,7 @@ body {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
   white-space: normal;
   font-style: normal;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--body);
 }
 
 /* Portal tooltip rendered at body level via React portal */
@@ -91,11 +128,27 @@ body {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--background);
   color: var(--foreground);
+}
+
+/* Headings across the app carry the display face */
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  letter-spacing: -0.02em;
+}
+
+/* Shared visible keyboard focus */
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--blue-bright);
+  outline-offset: 2px;
 }

@@ -1,32 +1,36 @@
 /* FXQuant Onboarding Tour - Custom driver.js styles */
 
 .fxquant-tour-popover {
-  background: #1a1a2e !important;
-  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  background: #0e1420 !important;
+  border: 1px solid #1a2331 !important;
   border-radius: 12px !important;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
-    0 0 30px rgba(99, 102, 241, 0.1) !important;
-  color: #e2e8f0 !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(61, 123, 255, 0.08) !important;
+  color: #e8eef6 !important;
   max-width: 360px !important;
 }
 
 .fxquant-tour-popover .driver-popover-title {
+  font-family: "Inter Tight", -apple-system, sans-serif !important;
   font-size: 1.1rem !important;
   font-weight: 700 !important;
-  color: #fff !important;
+  letter-spacing: -0.02em !important;
+  color: #e8eef6 !important;
   margin-bottom: 6px !important;
 }
 
 .fxquant-tour-popover .driver-popover-description {
   font-size: 0.9rem !important;
   line-height: 1.5 !important;
-  color: #a0aec0 !important;
+  color: #7b8a9b !important;
 }
 
 .fxquant-tour-popover .driver-popover-progress-text {
-  font-size: 0.75rem !important;
-  color: #6366f1 !important;
-  font-weight: 600 !important;
+  font-family: "JetBrains Mono", ui-monospace, monospace !important;
+  font-size: 0.6875rem !important;
+  color: #3d7bff !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.08em !important;
 }
 
 .fxquant-tour-popover .driver-popover-navigation-btns {
@@ -35,25 +39,25 @@
 
 .fxquant-tour-popover .driver-popover-prev-btn {
   background: transparent !important;
-  border: 1px solid rgba(99, 102, 241, 0.4) !important;
-  color: #a0aec0 !important;
+  border: 1px solid #1a2331 !important;
+  color: #7b8a9b !important;
   border-radius: 8px !important;
   padding: 8px 16px !important;
   font-size: 0.85rem !important;
   font-weight: 500 !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  transition: border-color 0.2s ease, color 0.2s ease !important;
   text-shadow: none !important;
 }
 
 .fxquant-tour-popover .driver-popover-prev-btn:hover {
-  border-color: #6366f1 !important;
-  color: #fff !important;
+  border-color: #3d7bff !important;
+  color: #e8eef6 !important;
 }
 
 .fxquant-tour-popover .driver-popover-next-btn,
 .fxquant-tour-popover .driver-popover-close-btn-text {
-  background: #6366f1 !important;
+  background: #3d7bff !important;
   border: none !important;
   color: #fff !important;
   border-radius: 8px !important;
@@ -61,13 +65,13 @@
   font-size: 0.85rem !important;
   font-weight: 600 !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  transition: background-color 0.2s ease !important;
   text-shadow: none !important;
 }
 
 .fxquant-tour-popover .driver-popover-next-btn:hover,
 .fxquant-tour-popover .driver-popover-close-btn-text:hover {
-  background: #4f46e5 !important;
+  background: #1e4fd8 !important;
 }
 
 /* Arrow styling */
@@ -75,18 +79,18 @@
 .fxquant-tour-popover .driver-popover-arrow-side-right,
 .fxquant-tour-popover .driver-popover-arrow-side-top,
 .fxquant-tour-popover .driver-popover-arrow-side-bottom {
-  border-color: #1a1a2e !important;
+  border-color: #0e1420 !important;
 }
 
 /* Close button (X) */
 .fxquant-tour-popover .driver-popover-close-btn {
-  color: #64748b !important;
+  color: #55606e !important;
   font-size: 1.2rem !important;
   transition: color 0.2s ease !important;
 }
 
 .fxquant-tour-popover .driver-popover-close-btn:hover {
-  color: #fff !important;
+  color: #e8eef6 !important;
 }
 
 /* Highlighted element border */

@@ -28,7 +28,7 @@ export default function Market() {
   const [setupError, setSetupError] = useState("");
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [challengeResult, setChallengeResult] = useState(null); // "passed" or "failed"
-  const [isWidgetsOpen, setIsWidgetsOpen] = useState(false); // mobile widgets drawer
+  const [mobileTab, setMobileTab] = useState("trade"); // small-screen panel tabs
 
   const needsAccountSetup = dbUser && !dbUser.accountType;
 
@@ -285,46 +285,30 @@ export default function Market() {
           )}
         </div>
 
-        {/* Mobile-only: floating button that opens the widgets drawer */}
-        <button
-          className={`widgets-drawer-toggle ${isWidgetsOpen ? "is-hidden" : ""}`}
-          onClick={() => setIsWidgetsOpen(true)}
-          aria-label="Open trade panel"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="8" y1="6" x2="21" y2="6" />
-            <line x1="8" y1="12" x2="21" y2="12" />
-            <line x1="8" y1="18" x2="21" y2="18" />
-            <line x1="3" y1="6" x2="3.01" y2="6" />
-            <line x1="3" y1="12" x2="3.01" y2="12" />
-            <line x1="3" y1="18" x2="3.01" y2="18" />
-          </svg>
-          Trade
-        </button>
-
-        {/* Mobile-only: backdrop behind the open drawer */}
-        {isWidgetsOpen && (
-          <div
-            className="widgets-drawer-backdrop"
-            onClick={() => setIsWidgetsOpen(false)}
-          />
+        {/* Mobile-only: tabs that switch which panel shows below the chart.
+            Hidden while a trade or journal form has taken over the panel. */}
+        {!showTradingForm && !showJournalForm && (
+          <div className="market-tabbar" role="tablist" aria-label="Trade panels">
+            {[
+              ["trade", "Trade"],
+              ["watchlist", "Watchlist"],
+              ["bias", "Bias"],
+              ["news", "News"],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                role="tab"
+                aria-selected={mobileTab === key}
+                className={`market-tab ${mobileTab === key ? "active" : ""}`}
+                onClick={() => setMobileTab(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         )}
 
-        <div className={`widgets-sidebar ${isWidgetsOpen ? "is-open" : ""}`}>
-          {/* Only show the drawer close (X) on the widgets view — the trade and
-              journal forms have their own controls. */}
-          {!showTradingForm && !showJournalForm && (
-            <button
-              className="widgets-drawer-close"
-              onClick={() => setIsWidgetsOpen(false)}
-              aria-label="Close trade panel"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-            </button>
-          )}
+        <div className={`widgets-sidebar tab-${mobileTab}`}>
           {showJournalForm && completedTrade ? (
             <TradeJournalForm
               tradeData={completedTrade}
@@ -341,8 +325,8 @@ export default function Market() {
             />
           ) : (
             <>
-              <div className="widget price-widget-compact">
-                <h3 className="widget-title">Current Price</h3>
+              <div className="widget price-widget-compact tabgroup-trade">
+                <h3 className="widget-title">Current price</h3>
                 <div className="price-ticker-container">
                   {!isLoading && (
                     <PriceTickerWidget symbol={selectedInstrument} />
@@ -350,7 +334,25 @@ export default function Market() {
                 </div>
               </div>
 
-              <div className="widget watchlist-widget" id="tour-watchlist">
+              <div className="widget trading-widget-compact tabgroup-trade" id="tour-quick-trade">
+                <h3 className="widget-title">Quick trade</h3>
+                <div className="trade-buttons">
+                  <button
+                    className="trade-btn trade-btn-buy"
+                    onClick={() => handleTradeClick("buy")}
+                  >
+                    Buy
+                  </button>
+                  <button
+                    className="trade-btn trade-btn-sell"
+                    onClick={() => handleTradeClick("sell")}
+                  >
+                    Sell
+                  </button>
+                </div>
+              </div>
+
+              <div className="widget watchlist-widget tabgroup-watchlist" id="tour-watchlist">
                 <h3 className="widget-title">Watchlist</h3>
                 <WatchlistWidget
                   selected={selectedInstrument}
@@ -358,30 +360,12 @@ export default function Market() {
                 />
               </div>
 
-              <div className="widget trading-widget-compact" id="tour-quick-trade">
-                <h3 className="widget-title">Quick Trade</h3>
-                <div className="trade-buttons">
-                  <button
-                    className="trade-btn trade-btn-buy"
-                    onClick={() => handleTradeClick("buy")}
-                  >
-                    BUY
-                  </button>
-                  <button
-                    className="trade-btn trade-btn-sell"
-                    onClick={() => handleTradeClick("sell")}
-                  >
-                    SELL
-                  </button>
-                </div>
-              </div>
-
-              <div className="widget ml-indicators-widget" id="tour-ml-indicators">
-                <h3 className="widget-title">ML Indicators</h3>
+              <div className="widget ml-indicators-widget tabgroup-bias" id="tour-ml-indicators">
+                <h3 className="widget-title">Daily bias</h3>
                 <DailyBiasDashboard symbol={selectedInstrument} />
               </div>
 
-              <div className="widget news-widget" id="tour-news">
+              <div className="widget news-widget tabgroup-news" id="tour-news">
                 <ForexNewsAlert symbol={selectedInstrument} />
               </div>
             </>

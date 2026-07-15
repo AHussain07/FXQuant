@@ -122,7 +122,7 @@ function TradeJournalForm({ tradeData, onSubmit, onSkip }) {
           <span className="summary-label">Prices</span>
           <span className="summary-value">
             {tradeData.entryPrice?.toFixed(5)}{" "}
-            <span style={{ color: "#71717a" }}>➜</span>{" "}
+            <span style={{ color: "var(--dimmer)" }}>➜</span>{" "}
             {tradeData.exitPrice?.toFixed(5)}
           </span>
         </div>

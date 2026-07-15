@@ -5,9 +5,9 @@ function ConfluencesCard({ confluences }) {
   if (!confluences || confluences.length === 0) {
     return (
       <div className="info-card">
-        <h3>Top Confluences</h3>
+        <h3>Top confluences</h3>
         <div className="empty-state">
-          No journal entries with confluences yet
+          Journal a trade with its confluences and the ranking starts here.
         </div>
       </div>
     );
@@ -15,11 +15,13 @@ function ConfluencesCard({ confluences }) {
 
   return (
     <div className="info-card">
-      <h3>Top Confluences</h3>
+      <h3>Top confluences</h3>
       <div className="confluences-list">
         {confluences.map((confluence, index) => (
           <div key={index} className="confluence-item">
-            <div className="confluence-rank">#{index + 1}</div>
+            <div className="confluence-rank">
+              {String(index + 1).padStart(2, "0")}
+            </div>
             <div className="confluence-info">
               <div className="confluence-name">{confluence.name}</div>
               <div className="confluence-count">
