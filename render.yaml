@@ -31,7 +31,7 @@ services:
     startCommand: node server.js
     healthCheckPath: /api/health
     domains:
-      - api.fxquant.uk
+      - api.fxquant.app
     envVars:
       # Mongo Atlas connection string
       - key: MONGODB_URI
@@ -67,7 +67,7 @@ services:
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     domains:
-      - ml.fxquant.uk
+      - ml.fxquant.app
     envVars:
       # Pinned because numpy 1.26.2 has no wheels for Python 3.13; without this
       # Render's default interpreter would try to build it from source and fail.
