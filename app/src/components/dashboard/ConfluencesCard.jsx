@@ -7,7 +7,7 @@ function ConfluencesCard({ confluences }) {
       <div className="info-card">
         <h3>Top confluences</h3>
         <div className="empty-state">
-          Journal a trade with its confluences and the ranking starts here.
+          No journal entries with confluences yet.
         </div>
       </div>
     );

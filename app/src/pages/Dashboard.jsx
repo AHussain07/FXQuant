@@ -150,8 +150,8 @@ const Dashboard = () => {
             <span className="dash-eyebrow">No response</span>
             <h2>Couldn't load your dashboard</h2>
             <p>
-              The server didn't answer after several tries. It may still be
-              waking up — trying again usually fixes it.
+              The server did not respond. It may still be waking up. Trying
+              again usually fixes it.
             </p>
             <button
               className="retry-btn"
@@ -214,11 +214,11 @@ const Dashboard = () => {
         {!hasTrades ? (
           <div className="empty-dashboard">
             <span className="dash-eyebrow">No data yet</span>
-            <h2>Your curve starts at trade one</h2>
+            <h2>No trading data yet</h2>
             <p>
               {timeframe === "all"
-                ? "Place your first trade and this page starts keeping score — equity curve, win rate, and the setups that earn."
-                : "No trades closed in this period. Pick a wider range above, or go take the next trade."}
+                ? "Place your first trade to see your performance here."
+                : "No trades were closed in this period. Try selecting a wider time period above."}
             </p>
           </div>
         ) : (
